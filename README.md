@@ -31,7 +31,7 @@ tools/articles/*.md    示例文章源文件
 ```
 
 ## 需要替换的占位内容（请逐项检查）
-1. **邮箱**：当前按提供原样使用 `shuojinyuanli@gmail` —— **看起来不完整（可能缺少 `.com`）**，请确认后全局替换（`index.html`、`contact.html`、页脚、表单 `data-mailto`；或修改 `tools/build.py` 里的 `EMAIL` 后重新运行）。
+1. **邮箱**：当前按提供原样使用 `shuojinyuanli@gmail.com` —— **看起来不完整（可能缺少 `.com`）**，请确认后全局替换（`index.html`、`contact.html`、页脚、表单 `data-mailto`；或修改 `tools/build.py` 里的 `EMAIL` 后重新运行）。
 2. **公众号 / 社交媒体**：`[链接]`（首页联系区、`contact.html`、页脚；页脚中该链接目前是禁用占位）。
 3. **项目经验**（首页 4 个卡片）：全部为 `[示例]` 文案与 `[XX%]` 数字，需换成真实项目、职责、成果和数据。页面上有“示例内容，请替换”标注，替换后请删除。
 4. **工作经历**：`[公司名称]` `[职位]` `[YYYY.MM — YYYY.MM]` `[负责方向]` `[代表成果]`（2 条占位，可增删）。
