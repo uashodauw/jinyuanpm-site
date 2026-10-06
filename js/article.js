@@ -34,13 +34,17 @@
   var toc = r.headings.map(function (h) { return '<li class="l' + h.level + '"><a href="#' + h.id + '">' + esc(h.text) + '</a></li>'; }).join('');
   var dateFmt = a.date.replace(/-/g, '.');
   var u = encodeURIComponent(url), t = encodeURIComponent(a.title);
-  var html =
+  /* decorative, semi-transparent cover on the right side of the article area (replaces the old full-width cover) */
+  var bg = '<div class="art-bg" aria-hidden="true"><picture>' +
+    '<source type="image/webp" srcset="assets/' + a.cover + '-sm.webp 480w, assets/' + a.cover + '.webp 960w" sizes="(max-width:900px) 75vw, 760px">' +
+    '<img src="assets/' + a.cover + '.jpg" srcset="assets/' + a.cover + '-sm.jpg 480w, assets/' + a.cover + '.jpg 960w" sizes="(max-width:900px) 75vw, 760px" alt="" width="960" height="540" decoding="async"></picture></div>';
+  var html = bg +
     '<header class="art-head"><div class="wrap"><div class="hd">' +
     '<p class="label"><a href="articles.html?cat=' + encodeURIComponent(a.category) + '" style="color:inherit">' + esc(a.category) + '</a></p>' +
     '<h1>' + esc(a.title) + '</h1><p class="excerpt">' + esc(a.excerpt) + '</p>' +
     '<p class="meta" style="margin-top:22px"><span>' + dateFmt + '</span><span>阅读约 ' + a.readTime + ' 分钟</span><span>作者 李硕金沅</span></p>' +
     '</div></div></header>' +
-    '<div class="wrap"><figure class="art-cover feather-soft" style="margin-bottom:48px">' + pic(a.cover, a.coverAlt, '', true).replace('sizes="(max-width:700px) 100vw, 400px"', 'sizes="1280px"').replace('sizes="(max-width:700px) 100vw, 400px"', 'sizes="1280px"') + '</figure>' +
+    '<div class="wrap">' +
     '<div class="art-layout"><nav class="toc" aria-label="文章目录"><h2>目录</h2><ol>' + toc + '</ol></nav>' +
     '<details class="toc-m"><summary>目录 / CONTENTS</summary><ol>' + toc + '</ol></details>' +
     '<div class="prose" id="prose">' + r.html + '</div>' +

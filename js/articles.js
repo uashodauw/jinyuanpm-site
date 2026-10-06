@@ -2,6 +2,16 @@
 (function () {
   var list = document.getElementById('alist'); if (!list) return;
   var items = [].slice.call(list.querySelectorAll('li'));
+  /* keep the list in date order, newest first (data-date="YYYY-MM-DD"; falls back to window.ARTICLES by slug) */
+  var byslug = {}; (window.ARTICLES || []).forEach(function (a) { byslug[a.slug] = a.date; });
+  function dateOf(li) {
+    if (li.getAttribute('data-date')) return li.getAttribute('data-date');
+    var m = (li.querySelector('a[href*="slug="]') || { getAttribute: function () { return ''; } }).getAttribute('href').match(/slug=([^&#]+)/);
+    return (m && byslug[decodeURIComponent(m[1])]) || '';
+  }
+  items = items.map(function (li, i) { return { li: li, d: dateOf(li), i: i }; })
+    .sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : a.i - b.i; })
+    .map(function (o) { list.appendChild(o.li); return o.li; });
   var chips = [].slice.call(document.querySelectorAll('.chip'));
   var input = document.getElementById('q');
   var info = document.getElementById('result-info'), empty = document.getElementById('empty');

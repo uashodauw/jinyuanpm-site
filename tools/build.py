@@ -332,7 +332,7 @@ def articles_page():
     for a in ARTICLES:
         search = " ".join([a["title"], a["excerpt"], a["category"], " ".join(a["tags"])])
         tags = "".join(f'<span class="pill">{t}</span>' for t in a["tags"])
-        items.append(f'''<li data-cat="{a["category"]}" data-search="{E(search)}">
+        items.append(f'''<li data-date="{a["date"]}" data-cat="{a["category"]}" data-search="{E(search)}">
    <article class="aitem">
     <a class="thumb" href="article.html?slug={a["slug"]}" tabindex="-1" aria-hidden="true"><div>{pic(a["cover"], a["coverAlt"], sizes="(max-width:900px) 100vw, 320px")}</div></a>
     <div class="body">
