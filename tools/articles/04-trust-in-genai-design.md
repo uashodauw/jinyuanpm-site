@@ -3,7 +3,7 @@ slug: trust-in-genai-design
 title: 生成式 AI 产品设计中的信任感问题
 category: 生成式 AI 产品设计
 tags: 信任, 可解释性, 用户体验与人工智能
-date: 2026-08-02
+date: 2025-03-09
 cover: cover-mesa-r
 cover_alt: 黑白蚀刻的远处高原轮廓，象征可靠而稳定的基础
 excerpt: 生成式 AI 的输出天然带有不确定性。信任感不是靠“更自信的口吻”建立的，而是靠可控、可理解、可校验的设计。

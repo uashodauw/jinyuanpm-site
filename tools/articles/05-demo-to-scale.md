@@ -3,7 +3,7 @@ slug: demo-to-scale
 title: AI 产品从 Demo 走向规模化应用，需要解决什么
 category: 大模型应用实践
 tags: 规模化, 评测, 成本, 工程化
-date: 2026-09-20
+date: 2026-06-23
 cover: cover-mono-circuit
 cover_alt: 布满电路纹路的黑白蚀刻石块细节，象征工程化与系统复杂度
 excerpt: Demo 证明“可能”，规模化证明“可靠”。从评测、成本到运营，本文整理了跨越这道鸿沟需要补齐的几件事。

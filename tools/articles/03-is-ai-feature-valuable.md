@@ -3,7 +3,7 @@ slug: is-ai-feature-valuable
 title: 如何判断一个 AI 功能是否真的有价值
 category: AI 产品商业模式
 tags: 价值判断, 评估指标, 商业化
-date: 2026-06-07
+date: 2024-11-28
 cover: cover-dunes
 cover_alt: 黑白蚀刻的沙丘起伏，象征价值需要被测量与验证
 excerpt: 一个 AI 功能“看起来很酷”并不等于“有价值”。用任务完成度、替代成本与复用意愿三个维度，可以更冷静地做判断。
