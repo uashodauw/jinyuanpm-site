@@ -18,7 +18,10 @@
   var srcEl = art.querySelector('source[type="image/webp"]'), imEl = art.querySelector('img');
   srcImg.onload = function () { srcReady = true; if (W) buildHead(); };
   srcImg.src = (srcEl && srcEl.getAttribute('srcset')) || (imEl && imEl.getAttribute('src'));
-  var queue = [];
+  var queue = [], inq = [];
+  var CN = 300, cx_ = new Float32Array(CN), cy_ = new Float32Array(CN), cvx = new Float32Array(CN), cvy = new Float32Array(CN),
+      cag = new Float32Array(CN), clf = new Float32Array(CN), cmode = new Uint8Array(CN), ctx0 = new Float32Array(CN), cty0 = new Float32Array(CN),
+      ctgx = new Float32Array(CN), ctgy = new Float32Array(CN), csz = new Float32Array(CN), cfree = 0; // mode 0 free,1 crumble,2 inbound
   var ctx = cv.getContext('2d');
   var W = 0, H = 0, hx = 0, span = 1, img = {w: 0, h: 0, y: 0};
   var NA = 0, abx, aby, ax_, ay_, aph;                          // soft anchors
@@ -55,7 +58,7 @@
     if (srcReady) buildHead();
     gcols = Math.ceil(W / CELL) + 1; grows = Math.ceil(H / CELL) + 1;
     head = new Int32Array(gcols * grows);
-    alloc(Math.round(Math.min(W > 1500 ? 700 : W > 1350 ? 850 : 1000, W * H / 700)));
+    alloc(Math.round(Math.min(W > 1500 ? 480 : W > 1350 ? 700 : 900, W * H / 700)));
   }
 
   function alloc(n) {
@@ -66,12 +69,6 @@
     sig = [];
   }
   function spawn(i) {
-    if (queue.length) { // crumbled fragment from the head surface
-      var e = queue.pop();
-      px[i] = e[0]; py[i] = e[1]; vx[i] = R(8, 30); vy[i] = R(-12, 12);
-      age[i] = R(0, .2); life[i] = R(6, 12); anc[i] = (Math.random() * NA) | 0; gr[i] = Math.random() < .1 ? 1 : 0;
-      return;
-    }
     var q = Math.random();
     px[i] = hx - img.w * .03 + Math.sin(q * Math.PI) * img.w * .05 + R(-6, 10);
     py[i] = img.y + img.h * (.08 + .66 * q) + R(-5, 5);
@@ -197,7 +194,7 @@
   function headFrame(dt) {
     if (!HD) return;
     var p = (T % 11) / 11;                              // erode -> hold -> re-form loop
-    var e = 1.05 - .8 * ss(0, .42, p) + .8 * ss(.58, 1, p);
+    var e = 1.05 - .55 * ss(0, .42, p) + .55 * ss(.58, 1, p);
     var d = HD.md.data, mw = HD.mw, mh = HD.mh, q = 0;
     for (var cy = 0; cy < mh; cy++) for (var cx = 0; cx < mw; cx++) {
       var c = cx + cy * mw, u = (cx + .5) / mw;
@@ -205,8 +202,9 @@
       var a = u < .1 ? 1 : ss(-.05, .05, e + (nz - .5) * .45 - u);
       if (u < .2) a = Math.max(a, 1 - u / .2);
       d[c * 4 + 3] = (a * 255) | 0;
-      if (HD.solid[c] && queue.length < 900) {
+      if (HD.solid[c] && queue.length < 600) {
         var drop = HD.prev[c] - a;
+        if (drop < -.03 && inq.length < 300) inq.push([HD.x0 + cx * CS + CS / 2, cy * CS + CS / 2]);
         if (drop > .02) q += emitCell(cx, cy, Math.min(6, 2 + drop * 20));
         else if (a > .15 && a < .85 && Math.random() < dt * 2.5) q += emitCell(cx, cy, 1);
       }
@@ -219,8 +217,39 @@
     t.drawImage(HD.mc, 0, 0, mw, mh, 0, 0, mw * CS * tw / HD.rw, mh * CS * th / HD.rh);
     hctx.clearRect(0, 0, W, H);
     hctx.drawImage(HD.tmp, HD.x0, 0, HD.rw, HD.rh);
-    // recycle oldest-looking particles so fragments get a slot right away
-    for (var r = 0; r < Math.min(queue.length, 24); r++) { var i = (Math.random() * N) | 0; if (tt[i] > .45) spawn(i); }
+    crumble(dt);
+  }
+  function freeSlot() { for (var k = 0; k < CN; k++) { var q = (cfree + k) % CN; if (!cmode[q]) { cfree = q + 1; return q; } } return -1; }
+  var cpA = null;
+  function crumble(dt) {
+    var k, q;
+    while (queue.length) { q = freeSlot(); if (q < 0) { queue.length = 0; break; } var e = queue.pop();
+      cmode[q] = 1; cx_[q] = e[0]; cy_[q] = e[1]; cvx[q] = R(2, 10); cvy[q] = R(-6, 6); cag[q] = 0; clf[q] = R(1.8, 3.2); csz[q] = R(1.5, 2.4); }
+    while (inq.length) { q = freeSlot(); if (q < 0) { inq.length = 0; break; } var g = inq.pop();
+      cmode[q] = 2; ctgx[q] = g[0]; ctgy[q] = g[1]; ctx0[q] = g[0] + R(60, 200); cty0[q] = g[1] + R(-50, 50); cag[q] = 0; clf[q] = R(.8, 1.4); csz[q] = R(1.4, 2.2); }
+    var pa = new Path2D(), pb = new Path2D();
+    for (k = 0; k < CN; k++) {
+      var m = cmode[k]; if (!m) continue;
+      cag[k] += dt; var u = cag[k] / clf[k], x, y, al;
+      if (m === 1) { // linger as a bright cloud, then accelerate into the flow
+        var acc = ss(.25, 1, u);
+        cvx[k] += ((10 + 60 * acc) - cvx[k]) * Math.min(1, dt * 1.5);
+        cvy[k] += (Math.sin(cy_[k] * .02 + T) * 14 - cvy[k]) * Math.min(1, dt * 1.5);
+        cx_[k] += cvx[k] * dt; cy_[k] += cvy[k] * dt; x = cx_[k]; y = cy_[k]; al = Math.min(1, cag[k] / .15);
+        if (u >= 1) { // hand over to the main flow (same position & speed): no seam
+          var i = (Math.random() * N) | 0; px[i] = x; py[i] = y; vx[i] = cvx[k]; vy[i] = cvy[k]; age[i] = .8; life[i] = R(5, 11); anc[i] = (Math.random() * NA) | 0;
+          cmode[k] = 0; continue;
+        }
+      } else { // inbound: fly back from the flow to rebuild the head
+        var w = ss(0, 1, u); x = ctx0[k] + (ctgx[k] - ctx0[k]) * w; y = cty0[k] + (ctgy[k] - cty0[k]) * w + Math.sin(u * 3.1) * 8;
+        al = Math.min(1, u * 4) * (1 - ss(.85, 1, u));
+        if (u >= 1) { cmode[k] = 0; continue; }
+      }
+      var sz = csz[k];
+      (al > .6 ? pa : pb).rect(x - sz / 2, y - sz / 2, sz, sz);
+    }
+    ctx.fillStyle = 'rgba(250,252,251,.95)'; ctx.fill(pa);
+    ctx.fillStyle = 'rgba(235,240,238,.5)'; ctx.fill(pb);
   }
   function emitCell(cx, cy, n) {
     var k = 0;
