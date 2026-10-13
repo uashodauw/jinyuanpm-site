@@ -1,4 +1,5 @@
-/* Hero animation: dense stream off the head -> sparse drift -> dense neural network. No libraries. */
+/* Hero animation: one continuous transformation — particles stream off the head
+   and progressively link up into a neural network toward the right. No libraries. */
 (function () {
   var art = document.querySelector('.hero-art');
   if (!art || !window.matchMedia) return;
@@ -8,157 +9,147 @@
   cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';
   art.appendChild(cv);
   var ctx = cv.getContext('2d');
-  var W = 0, H = 0, dpr = 1, hx = 0, netL = 0, img = {w: 0, h: 0, y: 0};
-  var NN = 0, nsz, nbx, nby, nx, ny, nph, nglow, non;          // nodes
-  var E = [], sig = [];                                       // edges, signals
-  var N = 0, px, py, vx, vy, age, life, tgt, st;             // particles
+  var W = 0, H = 0, hx = 0, span = 1, img = {w: 0, h: 0, y: 0};
+  var NA = 0, abx, aby, ax_, ay_, aph;                          // soft anchors
+  var N = 0, px, py, vx, vy, age, life, anc, gr, tt;            // particles
+  var CELL = 72, gcols = 0, grows = 0, head, next;              // spatial grid
+  var links = new Int32Array(0), nl = 0, sig = [];
   var running = false, visible = true, raf = 0, last = 0, T = 0, slow = 0;
+  var B = 6;                                                     // t buckets
 
   function R(a, b) { return a + Math.random() * (b - a); }
+  function ss(a, b, x) { x = (x - a) / (b - a); x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); }
 
   function layout() {
     var r = art.getBoundingClientRect();
     W = r.width; H = r.height;
-    dpr = Math.min(window.devicePixelRatio || 1, W > 1500 ? 1.5 : 2);
+    var dpr = Math.min(window.devicePixelRatio || 1, W > 1500 ? 1.5 : 2);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     var iw = Math.max(W, H * 16 / 9), ih = iw * 9 / 16;
     img = {w: iw, h: ih, y: (H - ih) / 2};
-    hx = iw * 0.585;                                   // back of the skull
+    hx = iw * 0.585; span = Math.max(1, W - hx);
     art.style.setProperty('--hx', Math.round(iw * 0.60) + 'px');
-    netL = hx + (W - hx) * 0.43;                       // network region starts here
-    // nodes: organic loose layers (jittered, clustered, varied counts)
-    var span = W - 30 - netL, cols = Math.max(5, Math.round(span / 34)), list = [];
-    for (var c = 0; c < cols; c++) {
-      var t = c / (cols - 1), env = .3 + .22 * Math.sin(t * Math.PI) + R(-.04, .04);
-      var cnt = Math.round(R(9, 15) * (.7 + .5 * Math.sin(t * Math.PI))), cy = H * (.48 + R(-.06, .06));
-      for (var k = 0; k < cnt; k++) {
-        var g = (Math.random() + Math.random() + Math.random()) / 1.5 - 1;           // ~gaussian
-        if (Math.random() < .3) g = g * .4 + (Math.random() < .5 ? -.5 : .5);        // sub-clusters
-        list.push([netL + span * t + R(-18, 18), cy + g * H * env + R(-10, 10)]);
-      }
+    // soft anchors, density rising toward the right, organic envelope
+    NA = Math.round(Math.max(30, span / 9));
+    abx = new Float32Array(NA); aby = new Float32Array(NA); ax_ = new Float32Array(NA); ay_ = new Float32Array(NA); aph = new Float32Array(NA);
+    for (var i = 0; i < NA; i++) {
+      var t = .12 + .88 * Math.sqrt(Math.random());
+      var env = .22 + .2 * Math.sin(Math.min(1, t) * Math.PI * .9);
+      var g = (Math.random() + Math.random() + Math.random()) / 1.5 - 1;
+      abx[i] = hx + span * t - 20; aby[i] = H * .47 + g * H * env * 1.4; aph[i] = R(0, 6.283);
     }
-    NN = list.length;
-    nbx = new Float32Array(NN); nby = new Float32Array(NN); nx = new Float32Array(NN); ny = new Float32Array(NN);
-    nsz = new Float32Array(NN); nph = new Float32Array(NN); nglow = new Uint8Array(NN); non = new Float32Array(NN);
-    for (var i = 0; i < NN; i++) { nbx[i] = nx[i] = list[i][0]; nby[i] = ny[i] = list[i][1]; nph[i] = R(0, 6.283); nglow[i] = Math.random() < .1 ? 1 : 0; nsz[i] = Math.random() < .15 ? R(1.6, 2.2) : R(.7, 1.2); non[i] = .4; }
-    // edges: 3 nearest neighbours, forward-leaning
-    E = []; var seen = {};
-    for (i = 0; i < NN; i++) {
-      var d = [];
-      for (var j = 0; j < NN; j++) if (j !== i) { var dx = nbx[j] - nbx[i], dy = nby[j] - nby[i]; d.push([dx * dx + dy * dy * 1.4, j]); }
-      d.sort(function (a, b) { return a[0] - b[0]; });
-      for (k = 0; k < 4 && k < d.length; k++) { var a = Math.min(i, d[k][1]), b = Math.max(i, d[k][1]); if (!seen[a + '_' + b]) { seen[a + '_' + b] = 1; E.push(a, b); } }
-    }
-    sig = [];
-    alloc(Math.round(Math.min(W > 1500 ? 500 : W > 1350 ? 750 : 1000, W * H / 650)));
+    gcols = Math.ceil(W / CELL) + 1; grows = Math.ceil(H / CELL) + 1;
+    head = new Int32Array(gcols * grows);
+    alloc(Math.round(Math.min(W > 1500 ? 700 : W > 1350 ? 850 : 1000, W * H / 700)));
   }
 
   function alloc(n) {
-    N = n;
+    N = n; next = new Int32Array(N); links = new Int32Array(N * 6);
     px = new Float32Array(N); py = new Float32Array(N); vx = new Float32Array(N); vy = new Float32Array(N);
-    age = new Float32Array(N); life = new Float32Array(N); tgt = new Int16Array(N); st = new Float32Array(N);
-    for (var i = 0; i < N; i++) { spawn(i); pre(i); }
+    age = new Float32Array(N); life = new Float32Array(N); anc = new Int16Array(N); gr = new Uint8Array(N); tt = new Float32Array(N);
+    for (var i = 0; i < N; i++) { spawn(i); var s = (Math.random() * 900) | 0; for (var k = 0; k < s; k++) step(i, 1 / 60, k / 60); }
+    sig = [];
   }
   function spawn(i) {
-    var q = Math.random();                                    // position along the back of the head
-    var y = img.y + img.h * (.08 + .66 * q);
-    var bulge = Math.sin(q * Math.PI) * img.w * .05;          // skull curvature
-    px[i] = hx - img.w * .03 + bulge + R(-6, 10); py[i] = y + R(-5, 5);
-    vx[i] = R(20, 50); vy[i] = R(-10, 10);
-    age[i] = 0; life[i] = R(6, 10); tgt[i] = (Math.random() * NN) | 0; st[i] = R(.6, 1.4);
-  }
-  function pre(i) { // warm start: spread existing particles along their journey
-    var steps = (Math.random() * 400) | 0;
-    for (var s = 0; s < steps; s++) step(i, 1 / 60, T + s / 60);
+    var q = Math.random();
+    px[i] = hx - img.w * .03 + Math.sin(q * Math.PI) * img.w * .05 + R(-6, 10);
+    py[i] = img.y + img.h * (.08 + .66 * q) + R(-5, 5);
+    vx[i] = R(30, 60); vy[i] = R(-10, 10);
+    age[i] = 0; life[i] = R(5, 12); anc[i] = (Math.random() * NA) | 0; gr[i] = Math.random() < .12 ? 1 : 0;
   }
 
-  function step(i, dt, t) {
-    var x = px[i], y = py[i];
-    // flow field (smooth pseudo curl noise)
-    var fx = Math.sin(y * .011 + t * .6) + Math.cos(x * .007 - t * .4) * .6;
-    var fy = Math.cos(x * .009 + t * .5) + Math.sin(y * .013 - t * .7) * .6;
-    // dispersion in the middle, attraction on the right
-    var prog = (x - hx) / Math.max(1, netL - hx);             // 0 at head, 1 at network
-    var mid = prog > .08 && prog < 1 ? Math.sin(Math.PI * Math.min(1, (prog - .08) / .92)) : 0;
-    var ax = 30 + fx * 22 + mid * 55, ay = fy * (26 + mid * 30);
-    var j = tgt[i];
-    if (prog > .8) {
-      var k = Math.min(1, (prog - .8) / .4) * 5.5;
-      var dx = nx[j] - x, dy = ny[j] - y;
-      ax += dx * k * .35; ay += dy * k * .35;
-      if (dx * dx + dy * dy < 90) { non[j] = Math.min(1, non[j] + .04); if (Math.random() < .02) tgt[i] = nearNext(j); }
-    }
-    vx[i] += (ax - vx[i]) * Math.min(1, dt * 1.8 * st[i]);
-    vy[i] += (ay - vy[i]) * Math.min(1, dt * 1.8 * st[i]);
-    px[i] = x + vx[i] * dt; py[i] = y + vy[i] * dt;
-    age[i] += dt;
-    if (age[i] > life[i] || px[i] > W + 10 || py[i] < -20 || py[i] > H + 20) spawn(i);
+  function step(i, dt, t0) {
+    var x = px[i], y = py[i], t = (x - hx) / span; tt[i] = t;
+    var fx = Math.sin(y * .011 + t0 * .6) + Math.cos(x * .007 - t0 * .4) * .6;
+    var fy = Math.cos(x * .009 + t0 * .5) + Math.sin(y * .013 - t0 * .7) * .6;
+    var slowk = 1 - .7 * ss(.05, 1, t);                          // continuous slow-down
+    var spread = .6 + 1.2 * Math.sin(Math.PI * Math.min(1, Math.max(0, t) / .8)) * (1 - ss(.5, 1, t));
+    var tx = (70 + fx * 18) * slowk, ty = fy * 24 * spread * (0.6 + slowk);
+    var a = anc[i], k = ss(.15, 1, t) * 2.2;                     // anchor pull ramps in
+    if (k > 0) { tx += (ax_[a] - x) * k; ty += (ay_[a] - y) * k; }
+    var damp = Math.min(1, dt * 2.2);
+    vx[i] += (tx - vx[i]) * damp; vy[i] += (ty - vy[i]) * damp;
+    px[i] = x + vx[i] * dt; py[i] = y + vy[i] * dt; age[i] += dt;
+    if (k > .5 && Math.random() < dt * .25) anc[i] = (Math.random() * NA) | 0;   // wander between anchors
+    if (age[i] > life[i] || px[i] > W + 8 || py[i] < -30 || py[i] > H + 30) spawn(i);
   }
-  function nearNext(j) { // hop along an edge to keep the network flowing rightward
-    for (var e = 0; e < E.length; e += 2) if (E[e] === j && nbx[E[e + 1]] > nbx[j] && Math.random() < .5) return E[e + 1];
-    return (Math.random() * NN) | 0;
+
+  var cols = [], P = [], L = [];
+  for (var b = 0; b < B; b++) {
+    var u = b / (B - 1);
+    cols.push('rgba(' + Math.round(244 - 90 * u * .35) + ',' + Math.round(247 - 25 * u * .35) + ',' + Math.round(246 - 50 * u * .35) + ',' + (.95 - .25 * Math.sin(u * Math.PI)).toFixed(2) + ')');
   }
 
   function frame(now) {
     raf = 0; if (!running) return;
     var dt = Math.min(.05, (now - (last || now)) / 1000); last = now; T += dt;
-    // adaptive budget
-    if (dt > .0185) { if (++slow > 40 && N > 400) { alloc((N * .75) | 0); slow = 0; } } else slow = Math.max(0, slow - 1);
-    // fade previous frame -> short trails (keeps canvas transparent)
+    if (dt > .0185) { if (++slow > 40 && N > 300) { alloc((N * .8) | 0); slow = 0; } } else slow = Math.max(0, slow - 1);
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(0,0,0,.24)'; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over';
-    // breathing network
-    for (var n = 0; n < NN; n++) {
-      nx[n] = nbx[n] + Math.sin(T * .7 + nph[n]) * 5; ny[n] = nby[n] + Math.cos(T * .6 + nph[n] * 1.3) * 4;
-      non[n] += (.45 - non[n]) * dt * .8;
-    }
-    // particles (batched, two brightness buckets)
-    var pA = new Path2D(), pB = new Path2D();
-    for (var i = 0; i < N; i++) {
+    for (var a = 0; a < NA; a++) { ax_[a] = abx[a] + Math.sin(T * .35 + aph[a]) * 14; ay_[a] = aby[a] + Math.cos(T * .3 + aph[a] * 1.7) * 12; }
+    head.fill(-1);
+    var i, j;
+    for (i = 0; i < N; i++) {
       step(i, dt, T);
-      var x = px[i], y = py[i], f = Math.min(1, age[i] * 3) * Math.min(1, (life[i] - age[i]) * 2);
-      var near = (x - hx) < 70 || x > netL;
-      var s = near ? 1.1 : 1.4;
-      (near && f > .6 ? pA : pB).rect(x, y, s, s);
+      var c = ((px[i] / CELL) | 0) + ((py[i] / CELL) | 0) * gcols;
+      if (c >= 0 && c < head.length) { next[i] = head[c]; head[c] = i; } else next[i] = -1;
     }
-    ctx.fillStyle = 'rgba(244,247,246,.9)'; ctx.fill(pA);
-    ctx.fillStyle = 'rgba(220,226,224,.5)'; ctx.fill(pB);
-    // edges: one path, plus a brighter pass for active ones
-    var pe = new Path2D(), ph = new Path2D();
-    for (var e = 0; e < E.length; e += 2) {
-      var a = E[e], b = E[e + 1];
-      var p = (non[a] + non[b]) > 1.3 ? ph : pe;
-      p.moveTo(nx[a], ny[a]); p.lineTo(nx[b], ny[b]);
+    // links between nearby particles; radius & alpha ramp with t
+    var LB = 4, lp = []; for (b = 0; b < LB; b++) lp.push(new Path2D());
+    nl = 0;
+    for (i = 0; i < N; i++) {
+      var ti = tt[i]; if (ti < .04) continue;
+      var rr = 10 + 58 * ss(.04, 1, ti), r2 = rr * rr, cnt = 0;
+      var gx = (px[i] / CELL) | 0, gy = (py[i] / CELL) | 0;
+      for (var oy = -1; oy <= 1 && cnt < 3; oy++) for (var ox = -1; ox <= 1 && cnt < 3; ox++) {
+        var cx = gx + ox, cy = gy + oy; if (cx < 0 || cy < 0 || cx >= gcols || cy >= grows) continue;
+        for (j = head[cx + cy * gcols]; j !== -1 && cnt < 3; j = next[j]) {
+          if (j <= i) continue;
+          var dx = px[j] - px[i], dy = py[j] - py[i], d2 = dx * dx + dy * dy;
+          if (d2 > r2) continue;
+          var s = ss(.04, 1, Math.min(ti, tt[j])) * (1 - d2 / r2) * fade(i) * fade(j);
+          if (s < .03) continue;
+          var bk = Math.min(LB - 1, (s * LB) | 0);
+          lp[bk].moveTo(px[i], py[i]); lp[bk].lineTo(px[j], py[j]); cnt++;
+          if (s > .35 && nl < links.length / 2) { links[nl * 2] = i; links[nl * 2 + 1] = j; nl++; }
+        }
+      }
     }
-    ctx.lineWidth = .6; ctx.strokeStyle = 'rgba(210,218,216,.32)'; ctx.stroke(pe);
-    ctx.strokeStyle = 'rgba(230,236,234,.5)'; ctx.stroke(ph);
-    // signals
-    if (sig.length < 40 && Math.random() < dt * 14) sig.push({e: ((Math.random() * E.length / 2) | 0) * 2, u: 0, v: R(.8, 1.6)});
-    ctx.fillStyle = 'rgba(150,224,192,.95)';
+    ctx.lineWidth = .6;
+    for (b = 0; b < LB; b++) { ctx.strokeStyle = 'rgba(214,224,220,' + (.12 + .38 * (b + .5) / LB).toFixed(3) + ')'; ctx.stroke(lp[b]); }
+    // particles in t buckets (size & colour ramp)
+    var pp = [], pg = new Path2D(), pgh = new Path2D();
+    for (b = 0; b < B; b++) pp.push(new Path2D());
+    for (i = 0; i < N; i++) {
+      var t = Math.max(0, Math.min(1, tt[i])), f = fade(i); if (f < .15) continue;
+      var sz = (1 + 1.4 * ss(.4, 1, t)) * (.6 + .4 * f);
+      if (gr[i] && t > .2) {
+        var gs = sz * (.6 + .9 * ss(.2, 1, t));
+        pg.moveTo(px[i] + gs, py[i]); pg.arc(px[i], py[i], gs, 0, 6.283);
+        if (t > .55) { pgh.moveTo(px[i] + gs * 3.5, py[i]); pgh.arc(px[i], py[i], gs * 3.5, 0, 6.283); }
+      } else pp[Math.min(B - 1, (t * B) | 0)].rect(px[i] - sz / 2, py[i] - sz / 2, sz, sz);
+    }
+    for (b = 0; b < B; b++) { ctx.fillStyle = cols[b]; ctx.fill(pp[b]); }
+    ctx.fillStyle = 'rgba(150,224,192,.08)'; ctx.fill(pgh);
+    ctx.fillStyle = 'rgba(160,226,196,.9)'; ctx.fill(pg);
+    // signals hopping along dynamic links
+    if (nl && sig.length < 36 && Math.random() < dt * 16) { var q = (Math.random() * nl) | 0; sig.push({a: links[q * 2], b: links[q * 2 + 1], u: 0, v: R(1.2, 2.2)}); }
     var ps = new Path2D();
-    for (i = sig.length - 1; i >= 0; i--) {
-      var g = sig[i]; g.u += dt * g.v;
-      if (g.u >= 1) { var nb = nearNext(E[g.e + 1]); g.u = 0; g.e = edgeFrom(E[g.e + 1], nb); if (g.e < 0 || Math.random() < .3) { sig.splice(i, 1); continue; } }
-      var a2 = E[g.e], b2 = E[g.e + 1];
-      var sx = nx[a2] + (nx[b2] - nx[a2]) * g.u, sy = ny[a2] + (ny[b2] - ny[a2]) * g.u;
-      ps.moveTo(sx + 1.6, sy); ps.arc(sx, sy, 1.6, 0, 6.283);
+    for (var k = sig.length - 1; k >= 0; k--) {
+      var g = sig[k]; g.u += dt * g.v;
+      var ddx = px[g.b] - px[g.a], ddy = py[g.b] - py[g.a];
+      if (g.u >= 1 || ddx * ddx + ddy * ddy > 9000) { sig.splice(k, 1); continue; }
+      var sx = px[g.a] + ddx * g.u, sy = py[g.a] + ddy * g.u;
+      ps.moveTo(sx + 1.5, sy); ps.arc(sx, sy, 1.5, 0, 6.283);
     }
-    ctx.fill(ps);
-    // nodes
-    var pn = new Path2D(), pg = new Path2D(), pgh = new Path2D();
-    for (n = 0; n < NN; n++) {
-      var r = (1 + non[n] * 1.2) * nsz[n] * 1.25 * (.85 + .15 * Math.sin(T * 2.2 + nph[n]));
-      if (nglow[n]) { pg.moveTo(nx[n] + r + .6, ny[n]); pg.arc(nx[n], ny[n], r + .6, 0, 6.283); pgh.moveTo(nx[n] + r * 4, ny[n]); pgh.arc(nx[n], ny[n], r * 4, 0, 6.283); }
-      else { pn.moveTo(nx[n] + r, ny[n]); pn.arc(nx[n], ny[n], r, 0, 6.283); }
-    }
-    ctx.fillStyle = 'rgba(150,224,192,.10)'; ctx.fill(pgh);
-    ctx.fillStyle = 'rgba(150,224,192,.95)'; ctx.fill(pg);
-    ctx.fillStyle = 'rgba(238,242,240,.85)'; ctx.fill(pn);
+    ctx.fillStyle = 'rgba(160,232,200,.95)'; ctx.fill(ps);
     raf = requestAnimationFrame(frame);
   }
-  function edgeFrom(a, b) { for (var e = 0; e < E.length; e += 2) if ((E[e] === a && E[e + 1] === b)) return e; return -1; }
+  function fade(i) { // smooth in at emission, out at end of life / far right edge
+    return Math.min(1, age[i] / .35) * Math.min(1, (life[i] - age[i]) / 1.5) * Math.min(1, (W - px[i]) / 40);
+  }
 
   function update() {
     var on = mqDesk.matches && !mqRM.matches;
