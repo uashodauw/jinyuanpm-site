@@ -469,5 +469,7 @@ main,.site-footer{position:relative;z-index:1}
 .foot-art{height:auto;display:block}
 .foot-art picture{display:none}
 .foot-bar{position:static;justify-content:flex-end;padding:20px clamp(20px,2.4vw,36px) 28px}
-/* hero head larger on desktop */
-@media (min-width:901px){.hero-art img{transform:scale(1.18);transform-origin:92% 50%}}
+/* hero: face right after title, network to right edge (desktop) */
+@media (min-width:901px){.hero-art{left:max(0px,calc(51.25vw - 589px));right:0;width:auto}.hero-art img{object-position:left center}}
+@media (min-width:901px) and (max-width:1280px){.hero-art{left:67px}}
+@media (min-width:1441px){.hero-art{left:calc(15.8vw - 79px)}}
