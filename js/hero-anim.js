@@ -9,7 +9,7 @@
   art.appendChild(cv);
   var ctx = cv.getContext('2d');
   var W = 0, H = 0, dpr = 1, hx = 0, netL = 0, img = {w: 0, h: 0, y: 0};
-  var NN = 0, nbx, nby, nx, ny, nph, nglow, non;          // nodes
+  var NN = 0, nsz, nbx, nby, nx, ny, nph, nglow, non;          // nodes
   var E = [], sig = [];                                       // edges, signals
   var N = 0, px, py, vx, vy, age, life, tgt, st;             // particles
   var running = false, visible = true, raf = 0, last = 0, T = 0, slow = 0;
@@ -26,28 +26,32 @@
     img = {w: iw, h: ih, y: (H - ih) / 2};
     hx = iw * 0.585;                                   // back of the skull
     art.style.setProperty('--hx', Math.round(iw * 0.60) + 'px');
-    netL = hx + (W - hx) * 0.30;                       // network region starts here
-    // nodes: jittered layered grid filling the right side
-    var cols = Math.max(5, Math.round((W - 30 - netL) / 46)), rows = 11, list = [];
-    for (var c = 0; c < cols; c++) for (var k = 0; k < rows; k++) {
-      if (Math.random() < .18) continue;
-      var t = c / (cols - 1), spread = .6 + .3 * Math.sin(t * Math.PI); // bulge in middle of net
-      list.push([netL + (W - 30 - netL) * t + R(-12, 12), H * (.5 + (k / (rows - 1) - .5) * spread * 1.15) + R(-14, 14)]);
+    netL = hx + (W - hx) * 0.43;                       // network region starts here
+    // nodes: organic loose layers (jittered, clustered, varied counts)
+    var span = W - 30 - netL, cols = Math.max(5, Math.round(span / 34)), list = [];
+    for (var c = 0; c < cols; c++) {
+      var t = c / (cols - 1), env = .3 + .22 * Math.sin(t * Math.PI) + R(-.04, .04);
+      var cnt = Math.round(R(9, 15) * (.7 + .5 * Math.sin(t * Math.PI))), cy = H * (.48 + R(-.06, .06));
+      for (var k = 0; k < cnt; k++) {
+        var g = (Math.random() + Math.random() + Math.random()) / 1.5 - 1;           // ~gaussian
+        if (Math.random() < .3) g = g * .4 + (Math.random() < .5 ? -.5 : .5);        // sub-clusters
+        list.push([netL + span * t + R(-18, 18), cy + g * H * env + R(-10, 10)]);
+      }
     }
     NN = list.length;
     nbx = new Float32Array(NN); nby = new Float32Array(NN); nx = new Float32Array(NN); ny = new Float32Array(NN);
-    nph = new Float32Array(NN); nglow = new Uint8Array(NN); non = new Float32Array(NN);
-    for (var i = 0; i < NN; i++) { nbx[i] = nx[i] = list[i][0]; nby[i] = ny[i] = list[i][1]; nph[i] = R(0, 6.283); nglow[i] = Math.random() < .1 ? 1 : 0; non[i] = .4; }
+    nsz = new Float32Array(NN); nph = new Float32Array(NN); nglow = new Uint8Array(NN); non = new Float32Array(NN);
+    for (var i = 0; i < NN; i++) { nbx[i] = nx[i] = list[i][0]; nby[i] = ny[i] = list[i][1]; nph[i] = R(0, 6.283); nglow[i] = Math.random() < .1 ? 1 : 0; nsz[i] = Math.random() < .15 ? R(1.6, 2.2) : R(.7, 1.2); non[i] = .4; }
     // edges: 3 nearest neighbours, forward-leaning
     E = []; var seen = {};
     for (i = 0; i < NN; i++) {
       var d = [];
       for (var j = 0; j < NN; j++) if (j !== i) { var dx = nbx[j] - nbx[i], dy = nby[j] - nby[i]; d.push([dx * dx + dy * dy * 1.4, j]); }
       d.sort(function (a, b) { return a[0] - b[0]; });
-      for (k = 0; k < 3 && k < d.length; k++) { var a = Math.min(i, d[k][1]), b = Math.max(i, d[k][1]); if (!seen[a + '_' + b]) { seen[a + '_' + b] = 1; E.push(a, b); } }
+      for (k = 0; k < 4 && k < d.length; k++) { var a = Math.min(i, d[k][1]), b = Math.max(i, d[k][1]); if (!seen[a + '_' + b]) { seen[a + '_' + b] = 1; E.push(a, b); } }
     }
     sig = [];
-    alloc(Math.round(Math.min(1100, W * H / 650)));
+    alloc(Math.round(Math.min(W > 1500 ? 500 : W > 1350 ? 750 : 1000, W * H / 650)));
   }
 
   function alloc(n) {
@@ -74,12 +78,13 @@
     // flow field (smooth pseudo curl noise)
     var fx = Math.sin(y * .011 + t * .6) + Math.cos(x * .007 - t * .4) * .6;
     var fy = Math.cos(x * .009 + t * .5) + Math.sin(y * .013 - t * .7) * .6;
-    var ax = 34 + fx * 22, ay = fy * 26;
     // dispersion in the middle, attraction on the right
     var prog = (x - hx) / Math.max(1, netL - hx);             // 0 at head, 1 at network
+    var mid = prog > .08 && prog < 1 ? Math.sin(Math.PI * Math.min(1, (prog - .08) / .92)) : 0;
+    var ax = 30 + fx * 22 + mid * 55, ay = fy * (26 + mid * 30);
     var j = tgt[i];
-    if (prog > .55) {
-      var k = Math.min(1, (prog - .55) / .6) * 5.5;
+    if (prog > .8) {
+      var k = Math.min(1, (prog - .8) / .4) * 5.5;
       var dx = nx[j] - x, dy = ny[j] - y;
       ax += dx * k * .35; ay += dy * k * .35;
       if (dx * dx + dy * dy < 90) { non[j] = Math.min(1, non[j] + .04); if (Math.random() < .02) tgt[i] = nearNext(j); }
@@ -144,7 +149,7 @@
     // nodes
     var pn = new Path2D(), pg = new Path2D(), pgh = new Path2D();
     for (n = 0; n < NN; n++) {
-      var r = (1.4 + non[n] * 1.4) * (.85 + .15 * Math.sin(T * 2.2 + nph[n]));
+      var r = (1 + non[n] * 1.2) * nsz[n] * 1.25 * (.85 + .15 * Math.sin(T * 2.2 + nph[n]));
       if (nglow[n]) { pg.moveTo(nx[n] + r + .6, ny[n]); pg.arc(nx[n], ny[n], r + .6, 0, 6.283); pgh.moveTo(nx[n] + r * 4, ny[n]); pgh.arc(nx[n], ny[n], r * 4, 0, 6.283); }
       else { pn.moveTo(nx[n] + r, ny[n]); pn.arc(nx[n], ny[n], r, 0, 6.283); }
     }
