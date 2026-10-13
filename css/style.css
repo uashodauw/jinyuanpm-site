@@ -469,3 +469,5 @@ main,.site-footer{position:relative;z-index:1}
 .foot-art{height:auto;display:block}
 .foot-art picture{display:none}
 .foot-bar{position:static;justify-content:flex-end;padding:20px clamp(20px,2.4vw,36px) 28px}
+/* hero head larger on desktop */
+@media (min-width:901px){.hero-art img{transform:scale(1.18);transform-origin:92% 50%}}
