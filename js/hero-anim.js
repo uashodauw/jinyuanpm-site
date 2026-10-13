@@ -7,7 +7,18 @@
   var cv = document.createElement('canvas');
   cv.setAttribute('aria-hidden', 'true');
   cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';
-  art.appendChild(cv);
+  var hc = document.createElement('canvas');
+  hc.setAttribute('aria-hidden', 'true');
+  hc.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';
+  cv.style.zIndex = '2';
+  art.appendChild(hc); art.appendChild(cv);
+  var hctx = hc.getContext('2d');
+  // head-dissolve state
+  var srcImg = new Image(), srcReady = false, HD = null;
+  var srcEl = art.querySelector('source[type="image/webp"]'), imEl = art.querySelector('img');
+  srcImg.onload = function () { srcReady = true; if (W) buildHead(); };
+  srcImg.src = (srcEl && srcEl.getAttribute('srcset')) || (imEl && imEl.getAttribute('src'));
+  var queue = [];
   var ctx = cv.getContext('2d');
   var W = 0, H = 0, hx = 0, span = 1, img = {w: 0, h: 0, y: 0};
   var NA = 0, abx, aby, ax_, ay_, aph;                          // soft anchors
@@ -26,8 +37,9 @@
     var dpr = Math.min(window.devicePixelRatio || 1, W > 1500 ? 1.5 : 2);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var iw = Math.max(W, H * 16 / 9), ih = iw * 9 / 16;
-    img = {w: iw, h: ih, y: (H - ih) / 2};
+    var ir = imEl ? imEl.getBoundingClientRect() : r, bw = ir.width || W, bh = ir.height || H;
+    var iw = Math.max(bw, bh * 16 / 9), ih = iw * 9 / 16;   // matches the <img> object-fit:cover, left center
+    img = {w: iw, h: ih, y: (ir.top - r.top) + (bh - ih) / 2};
     hx = iw * 0.585; span = Math.max(1, W - hx);
     art.style.setProperty('--hx', Math.round(iw * 0.60) + 'px');
     // soft anchors, density rising toward the right, organic envelope
@@ -39,6 +51,8 @@
       var g = (Math.random() + Math.random() + Math.random()) / 1.5 - 1;
       abx[i] = hx + span * t - 20; aby[i] = H * .47 + g * H * env * 1.4; aph[i] = R(0, 6.283);
     }
+    hc.width = cv.width; hc.height = cv.height; hctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (srcReady) buildHead();
     gcols = Math.ceil(W / CELL) + 1; grows = Math.ceil(H / CELL) + 1;
     head = new Int32Array(gcols * grows);
     alloc(Math.round(Math.min(W > 1500 ? 700 : W > 1350 ? 850 : 1000, W * H / 700)));
@@ -52,6 +66,12 @@
     sig = [];
   }
   function spawn(i) {
+    if (queue.length) { // crumbled fragment from the head surface
+      var e = queue.pop();
+      px[i] = e[0]; py[i] = e[1]; vx[i] = R(8, 30); vy[i] = R(-12, 12);
+      age[i] = R(0, .2); life[i] = R(6, 12); anc[i] = (Math.random() * NA) | 0; gr[i] = Math.random() < .1 ? 1 : 0;
+      return;
+    }
     var q = Math.random();
     px[i] = hx - img.w * .03 + Math.sin(q * Math.PI) * img.w * .05 + R(-6, 10);
     py[i] = img.y + img.h * (.08 + .66 * q) + R(-5, 5);
@@ -89,6 +109,7 @@
     ctx.fillStyle = 'rgba(0,0,0,.24)'; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over';
     for (var a = 0; a < NA; a++) { ax_[a] = abx[a] + Math.sin(T * .35 + aph[a]) * 14; ay_[a] = aby[a] + Math.cos(T * .3 + aph[a] * 1.7) * 12; }
+    headFrame(dt);
     head.fill(-1);
     var i, j;
     for (i = 0; i < N; i++) {
@@ -147,13 +168,75 @@
     ctx.fillStyle = 'rgba(160,232,200,.95)'; ctx.fill(ps);
     raf = requestAnimationFrame(frame);
   }
+  var CS = 5;
+  function buildHead() {
+    var iw = img.w, ih = img.h, x0 = Math.round(iw * .515), x1 = Math.min(Math.round(W), Math.round(iw * .74));
+    if (x1 - x0 < 40) { HD = null; return; }
+    var rw = x1 - x0, rh = Math.round(H), dpr = hc.width / W;
+    var sc = document.createElement('canvas'); sc.width = Math.round(rw * dpr); sc.height = Math.round(rh * dpr);
+    var sx = srcImg.naturalWidth / iw, sctx = sc.getContext('2d');
+    sctx.drawImage(srcImg, x0 * sx, -img.y * sx, rw * sx, rh * sx, 0, 0, sc.width, sc.height);
+    var lc = document.createElement('canvas'); lc.width = rw; lc.height = rh;
+    var lx = lc.getContext('2d'); lx.drawImage(sc, 0, 0, rw, rh);
+    var ld = lx.getImageData(0, 0, rw, rh).data, lum = new Uint8Array(rw * rh);
+    for (var k = 0; k < rw * rh; k++) lum[k] = ld[k * 4];
+    var mw = Math.ceil(rw / CS), mh = Math.ceil(rh / CS), mc = document.createElement('canvas'); mc.width = mw; mc.height = mh;
+    var noise = new Float32Array(mw * mh), solid = new Uint8Array(mw * mh), prev = new Float32Array(mw * mh).fill(1);
+    for (var cy = 0; cy < mh; cy++) for (var cx = 0; cx < mw; cx++) {
+      var c = cx + cy * mw;
+      noise[c] = .5 + .28 * Math.sin(cx * .41 + Math.sin(cy * .19) * 2.2) * Math.cos(cy * .23 + cx * .07) + .22 * (Math.random() - .5);
+      var n = 0; for (var yy = 0; yy < CS; yy++) for (var xx = 0; xx < CS; xx++) { var X = cx * CS + xx, Y = cy * CS + yy; if (X < rw && Y < rh && lum[X + Y * rw] > 55) n++; }
+      solid[c] = n > CS * CS * .25 ? 1 : 0;
+    }
+    var tmp = document.createElement('canvas'); tmp.width = sc.width; tmp.height = sc.height;
+    HD = {x0: x0, rw: rw, rh: rh, src: sc, lum: lum, mw: mw, mh: mh, mc: mc, mx: mc.getContext('2d'), md: mc.getContext('2d').createImageData(mw, mh),
+          noise: noise, solid: solid, prev: prev, tmp: tmp, tx: tmp.getContext('2d')};
+    art.style.setProperty('--hx', Math.round(iw * .535) + 'px');
+    art.classList.add('head-on');
+  }
+  function headFrame(dt) {
+    if (!HD) return;
+    var p = (T % 11) / 11;                              // erode -> hold -> re-form loop
+    var e = 1.05 - .8 * ss(0, .42, p) + .8 * ss(.58, 1, p);
+    var d = HD.md.data, mw = HD.mw, mh = HD.mh, q = 0;
+    for (var cy = 0; cy < mh; cy++) for (var cx = 0; cx < mw; cx++) {
+      var c = cx + cy * mw, u = (cx + .5) / mw;
+      var nz = HD.noise[c] + .12 * Math.sin(T * 1.7 + cx * .5 + cy * .3);
+      var a = u < .1 ? 1 : ss(-.05, .05, e + (nz - .5) * .45 - u);
+      if (u < .2) a = Math.max(a, 1 - u / .2);
+      d[c * 4 + 3] = (a * 255) | 0;
+      if (HD.solid[c] && queue.length < 900) {
+        var drop = HD.prev[c] - a;
+        if (drop > .02) q += emitCell(cx, cy, Math.min(6, 2 + drop * 20));
+        else if (a > .15 && a < .85 && Math.random() < dt * 2.5) q += emitCell(cx, cy, 1);
+      }
+      HD.prev[c] = a;
+    }
+    HD.mx.putImageData(HD.md, 0, 0);
+    var t = HD.tx, tw = HD.tmp.width, th = HD.tmp.height;
+    t.globalCompositeOperation = 'copy'; t.drawImage(HD.src, 0, 0);
+    t.globalCompositeOperation = 'destination-in'; t.imageSmoothingEnabled = true;
+    t.drawImage(HD.mc, 0, 0, mw, mh, 0, 0, mw * CS * tw / HD.rw, mh * CS * th / HD.rh);
+    hctx.clearRect(0, 0, W, H);
+    hctx.drawImage(HD.tmp, HD.x0, 0, HD.rw, HD.rh);
+    // recycle oldest-looking particles so fragments get a slot right away
+    for (var r = 0; r < Math.min(queue.length, 24); r++) { var i = (Math.random() * N) | 0; if (tt[i] > .45) spawn(i); }
+  }
+  function emitCell(cx, cy, n) {
+    var k = 0;
+    for (var s = 0; s < n * 3 && k < n; s++) {
+      var X = cx * CS + ((Math.random() * CS) | 0), Y = cy * CS + ((Math.random() * CS) | 0);
+      if (X < HD.rw && Y < HD.rh && HD.lum[X + Y * HD.rw] > 70) { queue.push([HD.x0 + X, Y]); k++; }
+    }
+    return k;
+  }
   function fade(i) { // smooth in at emission, out at end of life / far right edge
     return Math.min(1, age[i] / .35) * Math.min(1, (life[i] - age[i]) / 1.5) * Math.min(1, (W - px[i]) / 40);
   }
 
   function update() {
     var on = mqDesk.matches && !mqRM.matches;
-    cv.style.display = on ? '' : 'none'; art.classList.toggle('anim-on', on);
+    cv.style.display = on ? '' : 'none'; hc.style.display = on ? '' : 'none'; if (!on) art.classList.remove('head-on'); else if (HD) art.classList.add('head-on'); art.classList.toggle('anim-on', on);
     var should = on && visible && !document.hidden;
     if (should && !running) { running = true; last = 0; if (!raf) raf = requestAnimationFrame(frame); }
     else if (!should && running) { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
