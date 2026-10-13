@@ -465,3 +465,7 @@ main,.site-footer{position:relative;z-index:1}
 }
 /* contact section background */
 #contact{background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.62)),url(../assets/footer-art.jpg) center/cover no-repeat}
+/* footer art moved to contact background */
+.foot-art{height:auto;display:block}
+.foot-art picture{display:none}
+.foot-bar{position:static;justify-content:flex-end;padding:20px clamp(20px,2.4vw,36px) 28px}
