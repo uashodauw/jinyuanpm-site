@@ -463,3 +463,5 @@ main,.site-footer{position:relative;z-index:1}
 @media (max-width:900px){
   #opinions .op-side{padding-bottom:20px}
 }
+/* contact section background */
+#contact{background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.62)),url(../assets/footer-art.jpg) center/cover no-repeat}
