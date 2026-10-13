@@ -473,3 +473,4 @@ main,.site-footer{position:relative;z-index:1}
 @media (min-width:901px){.hero-art{left:max(0px,calc(51.25vw - 589px));right:0;width:auto}.hero-art img{object-position:left center}}
 @media (min-width:901px) and (max-width:1280px){.hero-art{left:67px}}
 @media (min-width:1441px){.hero-art{left:calc(15.8vw - 79px)}}
+@media (min-width:901px){.hero-art.anim-on picture{-webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx,56%) - 30px),transparent calc(var(--hx,56%) + 70px));mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx,56%) - 30px),transparent calc(var(--hx,56%) + 70px))}}

@@ -21,10 +21,11 @@
     // image drawn with object-fit:cover, object-position:left center (16:9)
     var iw = Math.max(W, H * 16 / 9), ih = iw * 9 / 16;
     img = {x: 0, y: (H - ih) / 2, w: iw, h: ih};
+    art.style.setProperty('--hx', Math.round(img.w * 0.60) + 'px');
     // network: layered columns from behind the head to the right edge
     nodes = []; edges = [];
-    var x0 = img.x + img.w * 0.74, x1 = W - 24, L = Math.max(3, Math.min(6, Math.round((x1 - x0) / 80)));
-    if (x1 - x0 < 120) { x0 = W * 0.72; L = 3; }
+    var x0 = img.x + img.w * 0.68, x1 = W - 30, L = Math.max(3, Math.min(6, Math.round((x1 - x0) / 80)));
+    if (x1 - x0 < 160) { x0 = W - 190; L = 3; }
     var counts = [4, 6, 7, 6, 5, 3], cols = [];
     for (var l = 0; l < L; l++) {
       var n = counts[Math.round(l * (counts.length - 1) / Math.max(1, L - 1))], col = [];
@@ -50,11 +51,11 @@
 
   function spawn(p, age, target) {
     // emit from the back of the head (dissolving wireframe region)
-    p.sx = img.x + img.w * rnd(0.56, 0.74); p.sy = img.y + img.h * rnd(0.14, 0.62);
-    p.mx = p.sx + rnd(60, 220); p.my = p.sy + rnd(-70, 70); // scattered drift point
+    var q = Math.random(); p.sx = img.x + img.w * rnd(0.53, 0.60) + q * 10; p.sy = img.y + img.h * (0.10 + 0.62 * q) + rnd(-12, 12);
+    p.mx = p.sx + rnd(90, 260); p.my = p.sy + rnd(-90, 90); // scattered drift point
     p.t = target; p.age = age; p.life = CYCLE * rnd(.85, 1.15);
     if (!target) { p.tx = p.mx + rnd(80, W); p.ty = p.my + rnd(-40, 40); }
-    p.r = target ? rnd(1.6, 2.4) : rnd(.8, 1.6);
+    p.r = target ? rnd(1.2, 1.8) : rnd(.7, 1.4);
     return p;
   }
 
@@ -63,7 +64,7 @@
     if (!running) return;
     var dt = Math.min(50, now - (last || now)); last = now;
     ctx.clearRect(0, 0, W, H);
-    nodes.forEach(function (n) { n.on *= 0.992; });
+    nodes.forEach(function (n) { n.on *= 0.995; });
     var ts = now / 1000;
     // particles
     for (var i = 0; i < parts.length; i++) {
@@ -75,28 +76,28 @@
         var k = ease(u / .35);
         x = p.sx + (p.mx - p.sx) * k + Math.sin(ts * 1.3 + i) * 4 * k;
         y = p.sy + (p.my - p.sy) * k + Math.cos(ts + i) * 4 * k;
-        a = Math.min(1, u / .08) * .7;
+        a = Math.min(1, u / .05);
       } else if (u < .7) { // scattered -> network
         var k2 = ease((u - .35) / .35);
         x = p.mx + (tx - p.mx) * k2 + Math.sin(ts * 1.3 + i) * 4 * (1 - k2);
         y = p.my + (ty - p.my) * k2 + Math.cos(ts + i) * 4 * (1 - k2);
-        a = .7;
+        a = .9;
       } else { // settled; fade near end
-        x = tx; y = ty; a = .7 * Math.min(1, (1 - u) / .12);
+        x = tx; y = ty; a = .9 * Math.min(1, (1 - u) / .12);
         if (p.t) p.t.on = Math.max(p.t.on, Math.min(1, (u - .7) / .08) * Math.min(1, (1 - u) / .12));
       }
       if (!p.t && u >= .7) continue;
-      ctx.fillStyle = 'rgba(225,230,228,' + (a * .85).toFixed(3) + ')';
+      ctx.fillStyle = 'rgba(240,244,242,' + (a * .95).toFixed(3) + ')';
       ctx.fillRect(x - p.r / 2, y - p.r / 2, p.r, p.r);
     }
     // edges
-    ctx.lineWidth = .8;
+    ctx.lineWidth = .7;
     edges.forEach(function (e) {
       var o = Math.min(e.a.on, e.b.on);
       if (o < .02) return;
-      ctx.strokeStyle = 'rgba(210,215,214,' + (o * .55).toFixed(3) + ')';
+      ctx.strokeStyle = 'rgba(210,215,214,' + (o * .45).toFixed(3) + ')';
       ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke();
-      if (o > .6 && Math.random() < dt / 2600) sigs.push({e: e, u: 0});
+      if (o > .6 && Math.random() < dt / 1800) sigs.push({e: e, u: 0});
     });
     // signals
     for (i = sigs.length - 1; i >= 0; i--) {
@@ -110,12 +111,12 @@
     // nodes with soft pulse
     nodes.forEach(function (n) {
       if (n.on < .02) return;
-      var pulse = .75 + .25 * Math.sin(ts * 2 + n.ph), r = (n.glow ? 2.8 : 2.2) * pulse;
+      var pulse = .75 + .25 * Math.sin(ts * 2 + n.ph), r = (n.glow ? 3 : 2.3) * pulse;
       if (n.glow) {
         ctx.fillStyle = 'rgba(150,222,190,' + (.16 * n.on).toFixed(3) + ')';
         ctx.beginPath(); ctx.arc(n.x, n.y, r * 4, 0, 6.283); ctx.fill();
         ctx.fillStyle = 'rgba(150,222,190,' + (.9 * n.on).toFixed(3) + ')';
-      } else ctx.fillStyle = 'rgba(230,234,232,' + (.85 * n.on).toFixed(3) + ')';
+      } else ctx.fillStyle = 'rgba(230,234,232,' + (.95 * n.on).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 6.283); ctx.fill();
     });
     raf = requestAnimationFrame(frame);
@@ -123,7 +124,7 @@
 
   function update() {
     var should = mqDesk.matches && !mqRM.matches && visible && !document.hidden;
-    cv.style.display = mqDesk.matches && !mqRM.matches ? '' : 'none';
+    var on = mqDesk.matches && !mqRM.matches; cv.style.display = on ? '' : 'none'; art.classList.toggle('anim-on', on);
     if (should && !running) { running = true; last = 0; if (!raf) raf = requestAnimationFrame(frame); }
     else if (!should && running) { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
   }
