@@ -475,3 +475,6 @@ main,.site-footer{position:relative;z-index:1}
 @media (min-width:1441px){.hero-art{left:calc(15.8vw - 79px)}}
 @media (min-width:901px){.hero-art.anim-on picture{-webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx,56%) - 90px),rgba(0,0,0,.45) calc(var(--hx,56%) + 20px),transparent calc(var(--hx,56%) + 170px));mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx,56%) - 90px),rgba(0,0,0,.45) calc(var(--hx,56%) + 20px),transparent calc(var(--hx,56%) + 170px))}}
 @media (min-width:901px){.hero-art.anim-on.head-on picture{-webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx) - 4px),transparent calc(var(--hx) + 26px));mask-image:linear-gradient(to right,#000 0,#000 calc(var(--hx) - 4px),transparent calc(var(--hx) + 26px))}}
+/* featured project spans full row */
+.project.project-featured{grid-column:1/-1}
+.project.project-featured .thumb{aspect-ratio:16/5}

@@ -16,7 +16,7 @@
 <meta property="og:image" content="assets/og.jpg?v=3">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23000'/%3E%3Crect x='3' y='3' width='10' height='10' fill='%23fff'/%3E%3Cpath d='M15 13V3a10 10 0 0 1 10 10z' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Crect x='3.8' y='15.8' width='8.4' height='8.4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M15 25V15h10z' fill='%237fa38f'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preload" as="image" type="image/webp" href="assets/hero.webp?v=3">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "李硕金沅", "alternateName": "JINYUAN", "jobTitle": "高级 AI 产品经理", "description": "李硕金沅（JINYUAN）｜高级 AI 产品经理。专注于人工智能产品、用户体验与商业化创新，关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。", "inLanguage": "zh-Hans", "knowsAbout": ["AI 产品管理", "生成式 AI", "AI Agent", "用户体验"], "sameAs": ["https://github.com/Uashodauw"]}</script>
@@ -63,10 +63,10 @@
    </div>
    <figure class="about-fig reveal" style="margin:0"><picture><source type="image/webp" srcset="assets/about-mono.webp"><img src="assets/about-mono.jpg" alt="刻有电路纹路的黑白蚀刻巨石，在黑色背景中被光线照亮" width="576" height="720" loading="lazy" decoding="async" class="feather-soft"></picture></figure>
    <dl class="facts reveal" style="margin:0">
-    <div><dt>当前职业</dt><dd>高级 AI 产品经理</dd></div><div><dt>工作方向</dt><dd>AI 产品设计 · 智能体</dd></div>
+    <div><dt>求职意向</dt><dd>AI 产品经理</dd></div><div><dt>工作方向</dt><dd>AI 产品设计 · 智能体</dd></div>
     <div><dt>从业年限</dt><dd>1 年</dd></div><div><dt>关注</dt><dd>生成式 AI · 技术落地</dd></div>
    </dl>
-   <ul class="skills reveal" aria-label="擅长领域"><li><span class="n">01</span><span>AI 产品战略</span></li><li><span class="n">02</span><span>生成式 AI 产品设计</span></li><li><span class="n">03</span><span>AI Agent 与工作流</span></li><li><span class="n">04</span><span>用户研究与需求分析</span></li><li><span class="n">05</span><span>产品商业化</span></li><li><span class="n">06</span><span>跨团队协作</span></li></ul>
+   <ul class="skills reveal" aria-label="个人优势"><li><span class="n">01</span><span>二手数码业务与规则梳理</span></li><li><span class="n">02</span><span>Prompt 调试与 Few-shot 调优</span></li><li><span class="n">03</span><span>评测集搭建与 Bad Case 归因</span></li><li><span class="n">04</span><span>风险识别与人机协同兜底</span></li></ul>
    <div class="philosophy reveal"><p class="label">工作理念 / PHILOSOPHY</p><blockquote><p>让复杂的 AI 能力，变成真实、易用且可持续的产品体验。</p></blockquote></div>
   </div>
  </div>
@@ -76,21 +76,25 @@
 <section class="sec" id="projects" aria-labelledby="projects-t">
  <div class="wrap">
   <div class="sec-head"><div class="cell reveal"><p class="label"><b>02</b> / PROJECTS</p><h2><span id="projects-t">产品与项目经验</span></h2></div><p class="note reveal"></p></div>
-  <div class="projects"><article class="project reveal">
+  <div class="projects"><article class="project project-featured reveal">
+   <div class="thumb"><picture><source type="image/webp" srcset="assets/cover-mono-circuit-sm.webp 480w, assets/cover-mono-circuit.webp 960w" sizes="(max-width:900px) 100vw, 1200px"><img src="assets/cover-mono-circuit.jpg" srcset="assets/cover-mono-circuit-sm.jpg 480w, assets/cover-mono-circuit.jpg 960w" sizes="(max-width:900px) 100vw, 1200px" alt="刻有电路纹路的黑白蚀刻巨石" width="960" height="540" loading="lazy" decoding="async"></picture></div>
+   <div class="project-body"><p class="label"><b>P01</b> / PROJECT · 转转集团 · 2025.03 — 2026.09</p>
+    <h3>代理业务台账与异常预警助手 <small>AI 应用运营 / 业务流程优化</small></h3>
+    <dl><dt>项目背景</dt><dd>代理业务中台账依赖人工、异常订单发现滞后、关键金额复核不足，需要设计 AI 台账与异常预警方案。</dd><dt>定标准</dt><dd>调研二手数码回收单据，提炼机型、内存版本、成色定级、IMEI 串号、验机扣款项、实付金额等 12 个核心解析字段；建立行业行话映射字典，把“15pm”“大花”“靓机”等非标表达映射到标准机型与质检定级。</dd><dt>调效果</dt><dd>针对手写单、转账截图等非标场景编写结构化抽取 Prompt 并补充 Few-shot 样例；优化金额字段的上下文判断，解决“多笔验机扣款”与“最终实付打款金额”易被混淆的问题。</dd><dt>做评测</dt><dd>用 200+ 笔真实历史脱敏台账建立基准测试集，主导多轮质检验收；对提取失败与幻觉等 Bad Case 归因分类、反哺提示词；推动研发落地兜底规则（如算力不足或差额异常时自动标记“待人工复核”），完成人机协同闭环。</dd><dt>项目成果</dt><dd>方案落地：完成 AI 台账与异常预警方案开发，并在 B 端客户及内部团队中投入试用。流程应用：实现台账汇总、异常提示、人工确认和金额复核流程的实际应用。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">结构化抽取</span><span class="pill">提示词工程 · Few-shot</span><span class="pill">评测与 Bad Case 归因</span><span class="pill">人机协同</span></div></dd></dl></div></article><article class="project reveal">
    <div class="thumb"><picture><source type="image/webp" srcset="assets/cover-mesa-l-sm.webp 480w, assets/cover-mesa-l.webp 960w" sizes="(max-width:900px) 100vw, 600px"><img src="assets/cover-mesa-l.jpg" srcset="assets/cover-mesa-l-sm.jpg 480w, assets/cover-mesa-l.jpg 960w" sizes="(max-width:900px) 100vw, 600px" alt="黑白蚀刻的沙漠高原轮廓" width="960" height="540" loading="lazy" decoding="async"></picture></div>
-   <div class="project-body"><p class="label"><b>P01</b> / PROJECT</p>
+   <div class="project-body"><p class="label"><b>P02</b> / PROJECT</p>
     <h3>企业级 AI 助手</h3>
     <dl><dt>项目背景</dt><dd>企业内部知识分散，员工获取信息成本高，希望借助 AI 助手提升检索与协作效率。</dd><dt>我的职责</dt><dd>负责需求调研、产品方案设计，并与研发、算法团队对齐上线节奏。</dd><dt>解决的问题</dt><dd>信息难找、重复咨询多、新员工上手慢。</dd><dt>产品成果</dt><dd>问答、摘要、资料检索等核心能力。</dd><dt>数据或业务影响</dt><dd>日均使用率提升 30%，问题解决时长缩短 25%。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">大语言模型</span><span class="pill">检索增强 RAG</span><span class="pill">权限控制</span></div></dd></dl></div></article><article class="project reveal">
    <div class="thumb"><picture><source type="image/webp" srcset="assets/cover-dunes-sm.webp 480w, assets/cover-dunes.webp 960w" sizes="(max-width:900px) 100vw, 600px"><img src="assets/cover-dunes.jpg" srcset="assets/cover-dunes-sm.jpg 480w, assets/cover-dunes.jpg 960w" sizes="(max-width:900px) 100vw, 600px" alt="黑白蚀刻的沙丘" width="960" height="540" loading="lazy" decoding="async"></picture></div>
-   <div class="project-body"><p class="label"><b>P02</b> / PROJECT</p>
+   <div class="project-body"><p class="label"><b>P03</b> / PROJECT</p>
     <h3>智能客服产品</h3>
     <dl><dt>项目背景</dt><dd>客服咨询量大、重复问题多，需要在保证体验的同时降低人工压力。</dd><dt>我的职责</dt><dd>负责对话流程设计、人机协同策略与效果评估方案。</dd><dt>解决的问题</dt><dd>响应不及时、答案不一致、复杂问题转接不顺畅。</dd><dt>产品成果</dt><dd>智能问答、工单摘要、人工转接建议。</dd><dt>数据或业务影响</dt><dd>自助解决率提升 20%，平均响应时间缩短 50%。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">对话系统</span><span class="pill">意图识别</span><span class="pill">知识库</span></div></dd></dl></div></article><article class="project reveal">
    <div class="thumb"><picture><source type="image/webp" srcset="assets/cover-ripples-sm.webp 480w, assets/cover-ripples.webp 960w" sizes="(max-width:900px) 100vw, 600px"><img src="assets/cover-ripples.jpg" srcset="assets/cover-ripples-sm.jpg 480w, assets/cover-ripples.jpg 960w" sizes="(max-width:900px) 100vw, 600px" alt="黑白蚀刻的沙丘纹理" width="960" height="540" loading="lazy" decoding="async"></picture></div>
-   <div class="project-body"><p class="label"><b>P03</b> / PROJECT</p>
+   <div class="project-body"><p class="label"><b>P04</b> / PROJECT</p>
     <h3>AI 内容生成平台</h3>
     <dl><dt>项目背景</dt><dd>内容生产依赖人工，效率与风格一致性难以兼顾。</dd><dt>我的职责</dt><dd>负责生成场景梳理、提示词模板设计与内容质量评价标准。</dd><dt>解决的问题</dt><dd>产出慢、质量不稳定、品牌调性难统一。</dd><dt>产品成果</dt><dd>多场景模板、风格控制与审核流程。</dd><dt>数据或业务影响</dt><dd>内容产出效率提升 40%，人工修改比例下降 30%。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">生成式 AI</span><span class="pill">提示词工程</span><span class="pill">内容审核</span></div></dd></dl></div></article><article class="project reveal">
    <div class="thumb"><picture><source type="image/webp" srcset="assets/cover-mono-top-sm.webp 480w, assets/cover-mono-top.webp 960w" sizes="(max-width:900px) 100vw, 600px"><img src="assets/cover-mono-top.jpg" srcset="assets/cover-mono-top-sm.jpg 480w, assets/cover-mono-top.jpg 960w" sizes="(max-width:900px) 100vw, 600px" alt="刻有电路纹路的黑白蚀刻巨石" width="960" height="540" loading="lazy" decoding="async"></picture></div>
-   <div class="project-body"><p class="label"><b>P04</b> / PROJECT</p>
+   <div class="project-body"><p class="label"><b>P05</b> / PROJECT</p>
     <h3>AI Agent 工作流系统</h3>
     <dl><dt>项目背景</dt><dd>业务流程涉及多个系统和重复步骤，希望由智能体协助完成多步骤任务。</dd><dt>我的职责</dt><dd>负责任务拆解、工具调用设计与关键节点的人工确认机制。</dd><dt>解决的问题</dt><dd>流程繁琐、跨系统切换多、结果难以追溯。</dd><dt>产品成果</dt><dd>可视化工作流编排、执行记录与异常兜底。</dd><dt>数据或业务影响</dt><dd>流程处理时长缩短 40%，人工介入次数下降 50%。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">AI Agent</span><span class="pill">工具调用</span><span class="pill">工作流编排</span></div></dd></dl></div></article></div>
  </div>
@@ -142,10 +146,8 @@
   <div class="tl-wrap">
    <p class="side-note reveal">时间线（由近到远）。</p>
    <div class="timeline reveal" style="grid-column:2/5">
-    <div class="tl-item"><p class="tl-date">[YYYY.MM — YYYY.MM]</p><h3>[公司名称] <span>/ [职位]</span></h3>
-     <dl><dt>负责方向</dt><dd>[负责方向]</dd><dt>代表成果</dt><dd>[代表成果]</dd></dl></div>
-    <div class="tl-item"><p class="tl-date">[YYYY.MM — YYYY.MM]</p><h3>[公司名称] <span>/ [职位]</span></h3>
-     <dl><dt>负责方向</dt><dd>[负责方向]</dd><dt>代表成果</dt><dd>[代表成果]</dd></dl></div>
+    <div class="tl-item"><p class="tl-date">2025.03 — 2026.09</p><h3>转转集团 · 北京转转精神科技有限责任公司 <span>/ AI 产品经理助理 · 业务流程优化</span></h3>
+     <dl><dt>负责方向</dt><dd>面向二手数码代理业务的 AI 台账与异常预警：梳理业务字段与行话映射字典，编写并调优结构化抽取 Prompt（含 Few-shot），搭建评测集并完成 Bad Case 归因，推动人工复核兜底规则落地。</dd><dt>代表成果</dt><dd>完成「代理业务台账与异常预警助手」方案开发，并在 B 端客户及内部团队中投入试用；实现台账汇总、异常提示、人工确认和金额复核流程的实际应用。</dd></dl></div>
    </div>
   </div>
  </div>
@@ -205,7 +207,7 @@
   </div>
   <div class="foot-art">
    <picture><source type="image/webp" srcset="assets/footer-art.webp"><img src="assets/footer-art.jpg" alt="黑白蚀刻版画风格的沙漠沙丘与远处高原，右侧渐隐入黑色背景" width="660" height="590" loading="lazy" decoding="async"></picture>
-   <div class="foot-bar"><a href="#top">返回顶部 ↑</a><span class="sep"></span><span>示例内容 · 静态站点</span></div>
+   <div class="foot-bar"><a href="#top">返回顶部 ↑</a><span class="sep"></span><span>© 2026 李硕金沅</span></div>
   </div>
  </div>
 </footer>
