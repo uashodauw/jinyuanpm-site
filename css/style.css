@@ -592,3 +592,23 @@ html,body{background:var(--bg)}
   .alist{padding:8px 12px 0}
   .project dt{border-top-style:solid}
 }
+/* multipage: contact page keeps the dimmed green-lines background across the whole page body */
+.contact-main{background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.62)),url(../assets/footer-art.jpg) center/cover no-repeat}
+.contact-main .page-head{border-bottom:0}
+/* single project card without a banner */
+.project.project-featured .project-body{padding-top:clamp(22px,2.6vw,36px)}
+/* project card → detail link */
+.project{position:relative}
+.project h3 .card-link{color:inherit}
+.project h3 .card-link::after{content:"";position:absolute;inset:0;z-index:1}
+.project .more{margin:16px 0 0}.project .more a{position:relative;z-index:2}
+.project:hover h3 .card-link{color:var(--accent)}
+/* project detail page */
+.pd-back{margin:0 0 18px}
+.pd-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pd-card h2{font-family:var(--sans);font-weight:700;font-size:clamp(20px,1.8vw,26px);margin:6px 0 12px}
+.pd-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.pd-list li{position:relative;padding-left:18px;color:var(--muted);font-size:15px;line-height:1.65}
+.pd-list li::before{content:"";position:absolute;left:0;top:.7em;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(94,248,197,.7)}
+.pd-foot{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 0}
+@media (max-width:760px){.pd-grid{grid-template-columns:1fr}}

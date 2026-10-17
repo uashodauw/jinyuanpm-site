@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>产品与项目经验｜JINYUAN｜AI 产品与智能体验</title>
+<meta name="description" content="李硕金沅的产品与项目经验：代理业务台账与异常预警助手（转转集团）。">
+<meta name="theme-color" content="#05060d">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JINYUAN｜AI 产品与智能体验">
+<meta property="og:title" content="产品与项目经验｜JINYUAN｜AI 产品与智能体验">
+<meta property="og:description" content="李硕金沅的产品与项目经验：代理业务台账与异常预警助手（转转集团）。">
+<meta property="og:locale" content="zh_CN">
+<!-- For a real deployment make og:image / og:url absolute, e.g. https://your-domain.com/assets/og.jpg -->
+<meta property="og:image" content="assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23000'/%3E%3Crect x='3' y='3' width='10' height='10' fill='%23fff'/%3E%3Cpath d='M15 13V3a10 10 0 0 1 10 10z' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Crect x='3.8' y='15.8' width='8.4' height='8.4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M15 25V15h10z' fill='%237fa38f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&family=Noto+Sans+SC:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="css/style.css?v=7">
+<script>document.documentElement.classList.add('js')</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "李硕金沅", "alternateName": "JINYUAN", "jobTitle": "AI 产品经理", "description": "李硕金沅（JINYUAN）｜AI 产品经理。专注于人工智能产品、用户体验与商业化创新，关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。", "inLanguage": "zh-Hans", "knowsAbout": ["AI 产品管理", "生成式 AI", "AI Agent", "用户体验"], "sameAs": ["https://github.com/Uashodauw"]}</script>
+</head>
+<body id="top">
+<a class="skip" href="#main">跳到主要内容</a>
+<div class="guides" aria-hidden="true"><div><span></span><span></span><span></span><span></span></div></div>
+<header class="site-header">
+ <div class="wrap"><div class="nav-inner">
+  <a class="logo" href="index.html" aria-label="JINYUAN 首页"><svg viewBox="0 0 28 28" fill="none" aria-hidden="true" focusable="false"><rect x="2" y="2" width="11" height="11" fill="currentColor"/><path d="M15 13V2a11 11 0 0 1 11 11z" stroke="currentColor" stroke-width="1.6"/><rect x="2.8" y="15.8" width="9.4" height="9.4" stroke="currentColor" stroke-width="1.6"/><path d="M15 26V15h11z" fill="currentColor"/></svg><span class="wm">JINYUAN</span></a>
+  <nav aria-label="主导航"><ul class="nav-links" id="nav-links"><li><a href="index.html">首页</a></li><li><a href="about.html">关于</a></li><li><a href="projects.html" aria-current="page">项目</a></li><li><a href="experience.html">经历</a></li><li><a href="articles.html">文章</a></li><li><a href="contact.html">联系</a></li></ul></nav>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开菜单"><span></span></button>
+ </div></div>
+ 
+</header>
+<main id="main">
+ <section class="page-head" aria-labelledby="page-t"><div class="wrap"><div class="cell">
+  <p class="label"><b>02</b> / PROJECTS</p><h1 id="page-t">产品与项目经验</h1></div></div></section>
+<section class="sec" style="border-top:0" id="projects" aria-labelledby="projects-t">
+ <div class="wrap">
+  <div class="projects"><article class="project project-featured reveal">
+   <div class="project-body"><p class="label"><b>P01</b> / PROJECT · 转转集团 · 2025.03 — 2026.09</p>
+    <h3><a class="card-link" href="project-agent-ledger.html">代理业务台账与异常预警助手</a> <small>AI 应用运营 / 业务流程优化</small></h3>
+    <dl><dt>项目背景</dt><dd>代理业务中台账依赖人工、异常订单发现滞后、关键金额复核不足，需要设计 AI 台账与异常预警方案。</dd><dt>定标准</dt><dd>调研二手数码回收单据，提炼机型、内存版本、成色定级、IMEI 串号、验机扣款项、实付金额等 12 个核心解析字段；建立行业行话映射字典，把“15pm”“大花”“靓机”等非标表达映射到标准机型与质检定级。</dd><dt>调效果</dt><dd>针对手写单、转账截图等非标场景编写结构化抽取 Prompt 并补充 Few-shot 样例；优化金额字段的上下文判断，解决“多笔验机扣款”与“最终实付打款金额”易被混淆的问题。</dd><dt>做评测</dt><dd>用 200+ 笔真实历史脱敏台账建立基准测试集，主导多轮质检验收；对提取失败与幻觉等 Bad Case 归因分类、反哺提示词；推动研发落地兜底规则（如算力不足或差额异常时自动标记“待人工复核”），完成人机协同闭环。</dd><dt>项目成果</dt><dd>方案落地：完成 AI 台账与异常预警方案开发，并在 B 端客户及内部团队中投入试用。流程应用：实现台账汇总、异常提示、人工确认和金额复核流程的实际应用。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">结构化抽取</span><span class="pill">提示词工程 · Few-shot</span><span class="pill">评测与 Bad Case 归因</span><span class="pill">人机协同</span></div></dd></dl><p class="more"><a class="link-arrow" href="project-agent-ledger.html">查看项目详情 <span aria-hidden="true">→</span></a></p></div></article></div>
+ </div>
+</section>
+</main>
+<footer class="site-footer">
+ <div class="wrap">
+  <div class="foot-cols">
+   <div class="fcol">
+    <a class="logo" href="index.html" aria-label="JINYUAN 首页"><svg viewBox="0 0 28 28" fill="none" aria-hidden="true" focusable="false"><rect x="2" y="2" width="11" height="11" fill="currentColor"/><path d="M15 13V2a11 11 0 0 1 11 11z" stroke="currentColor" stroke-width="1.6"/><rect x="2.8" y="15.8" width="9.4" height="9.4" stroke="currentColor" stroke-width="1.6"/><path d="M15 26V15h11z" fill="currentColor"/></svg><span class="wm">JINYUAN</span></a>
+    <p class="name">李硕金沅</p>
+    <p class="tagline">AI 产品经理</p>
+    <p class="copy-r">© <span id="year">2026</span> 李硕金沅 / JINYUAN.<br>保留所有权利。</p>
+   </div>
+   <nav class="fcol" aria-label="站点导航"><h2>导航</h2><ul>
+    <li><a href="index.html">首页</a></li><li><a href="about.html">关于我</a></li><li><a href="projects.html">项目经验</a></li>
+    <li><a href="about.html#opinions">我的观点</a></li><li><a href="experience.html">工作经历</a></li><li><a href="contact.html">联系</a></li></ul></nav>
+   <nav class="fcol" aria-label="文章链接"><h2>文章</h2><ul>
+    <li><a href="articles.html">全部文章</a></li><li><a href="article.html?slug=demo-to-scale">最新文章</a></li>
+    <li><a href="articles.html?cat=AI%20%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E6%96%B9%E6%B3%95%E8%AE%BA">AI 产品经理方法论</a></li><li><a href="articles.html?cat=AI%20Agent%20%E4%BA%A7%E5%93%81%E5%8C%96">AI Agent 产品化</a></li><li><a href="articles.html?cat=%E7%94%9F%E6%88%90%E5%BC%8F%20AI%20%E4%BA%A7%E5%93%81%E8%AE%BE%E8%AE%A1">生成式 AI 产品设计</a></li><li><a href="articles.html?cat=%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5">大模型应用实践</a></li></ul></nav>
+   <nav class="fcol" aria-label="联系与社交媒体"><h2>联系 / 社交媒体</h2><ul>
+    <li><a href="mailto:shuojinyuan@gmail.com">邮箱</a></li><li><a href="https://github.com/Uashodauw" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    <li><a href="contact.html#wechat">微信</a></li><li><a href="#" aria-disabled="true" title="占位：请替换为公众号 / 社交媒体链接">公众号 [链接]</a></li></ul></nav>
+  </div>
+  <div class="foot-art">
+   <picture><source type="image/webp" srcset="assets/footer-art.webp"><img src="assets/footer-art.jpg" alt="黑白蚀刻版画风格的沙漠沙丘与远处高原，右侧渐隐入黑色背景" width="660" height="590" loading="lazy" decoding="async"></picture>
+   <div class="foot-bar"><a href="#top">返回顶部 ↑</a><span class="sep"></span><span>© 2026 李硕金沅</span></div>
+  </div>
+ </div>
+</footer>
+<script src="js/main.js" defer></script>
+</body>
+</html>

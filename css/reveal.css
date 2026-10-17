@@ -119,3 +119,5 @@ body.home-reveal.hdr-show .site-header{transform:none}
 @media (max-width:820px) and (orientation:landscape) and (max-height:520px){
   .rv-copy{top:70px}.rv-copy h1{font-size:15vh}.rv-card{display:none}.rv-tag{top:52%}
 }
+.rv-nav a[aria-current]{border-color:var(--rv-mint);color:var(--rv-mint)}
+.rv-menu a[aria-current]{color:var(--rv-mint);opacity:1}
