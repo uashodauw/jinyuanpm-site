@@ -13,7 +13,7 @@
 
   function load(src) { return new Promise(function (res) { var i = new Image(); i.decoding = 'async'; i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }); }
   var webp = document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  var ext = webp ? '.webp' : '.png', V = '?v=5';
+  var ext = webp ? '.webp' : '.png', V = '?v=6';
   var IMG = {};
 
   // ---- brush stamp (dry brush) ----
@@ -35,18 +35,35 @@
   })();
 
   // ---- layout / hero rect ----
+  var copyEl = hero.querySelector('.rv-copy'), tagEl = hero.querySelector('.rv-tag');
+  var TOP = 8 / 941; // helmet dome starts 8px below the top of the source frame
+  function tagBox() { // visual box of the rotated/stretched tag, minus the entrance translate
+    var r = tagEl.getBoundingClientRect(), hr = hero.getBoundingClientRect(), m = getComputedStyle(tagEl).transform, ty = 0;
+    if (m && m !== 'none') { var v = m.match(/-?[\d.]+/g); ty = +v[v.length - 1] || 0; }
+    return {top: r.top - hr.top - ty, bottom: r.bottom - hr.top - ty, h: r.height};
+  }
   function layout() {
     var r = hero.getBoundingClientRect(); W = r.width; H = r.height; DPR = Math.min(window.devicePixelRatio || 1, 2);
     [front, sparks, scratch].forEach(function (c) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); });
     mask.width = Math.round(W * .5); mask.height = Math.round(H * .5);
-    var w = Math.max(W, H * AR);
-    if (W < H) w = Math.max(W, Math.min(H * AR, W * (W < 600 ? 2.3 : 1.9)));
-    var h = w / AR, x;
-    // subject is right of centre in the source (u≈.655): keep it in frame / between copy and card
-    if (W < H) x = W * .5 - w * .655; else x = W * .6 - w * .655;
-    x = Math.min(0, Math.max(W - w, x));
-    var y = (h >= H) ? (H - h) / 2 : H - h;
-    cover = {x: x, y: y, w: w, h: h};
+    var portrait = W < H, w;
+    if (portrait) {
+      // tag sits right under the copy; the bust is sized so the helmet dome starts just under the tag
+      var cb = copyEl.offsetTop + copyEl.offsetHeight;
+      tagEl.style.top = cb + 'px'; var tb = tagBox();
+      tagEl.style.top = (cb + (cb - tb.top) + 6) + 'px'; tb = tagBox();
+      var helmetTop = tb.bottom - tb.h * .3, hMax = (H - helmetTop) / (1 - TOP);
+      w = Math.min(H * AR, W * (W < 600 ? 2.3 : 1.9), hMax * AR);
+      w = Math.max(w, W * 1.1);
+    } else {
+      tagEl.style.top = '';
+      w = H * .97 * AR; // fit height with a little headroom: the whole helmet is visible, bust reaches the bottom edge
+    }
+    var h = w / AR, x = W * (portrait ? .5 : .6) - w * .655;
+    x = Math.max(x, W - w);                                  // keep the right shoulder running off the right edge
+    x = Math.min(x, W * (portrait ? .62 : .70) - w * .655);  // ...unless that pushes the face too far right
+    var y = h <= H ? H - h : 0;                              // bottom-anchored
+    cover = {x: x, y: y, w: w, h: h, fade: x + w < W - .5};
     brushR = Math.max(38, Math.min(W, H) * (W < 820 ? .11 : .075));
     dirty = true;
   }
@@ -63,12 +80,12 @@
       pts.push({x: last.x + dx * t + (Math.random() - .5) * r * .12, y: last.y + dy * t + (Math.random() - .5) * r * .12, r: jr, a: ang, rot: Math.random() * 6.283, t: now});
     }
     if (pts.length > MAXP) pts.splice(0, pts.length - MAXP);
-    var ns = Math.min(6, dist / 10) | 0;
+    var ns = Math.min(9, dist / 7) | 0;
     for (k = 0; k < ns; k++) {
-      var sa = Math.random() * 6.283, sp = 1 + Math.random() * 4.5;
-      parts.push({x: p.x, y: p.y, vx: Math.cos(sa) * sp, vy: Math.sin(sa) * sp, life: 1, d: .025 + Math.random() * .04, hue: Math.random() < .7 ? 160 : 186});
+      var sa = Math.random() * 6.283, sp = 1.4 + Math.random() * 5;
+      parts.push({x: p.x, y: p.y, vx: Math.cos(sa) * sp, vy: Math.sin(sa) * sp, life: 1, d: .02 + Math.random() * .035, hue: Math.random() < .7 ? 160 : 186});
     }
-    if (Math.random() < Math.min(.5, dist / 90)) {
+    if (Math.random() < Math.min(.6, dist / 70)) {
       var ba = Math.random() * 6.283;
       bolt(p.x + Math.cos(ba) * brushR * .55, p.y + Math.sin(ba) * brushR * .55, ba, brushR * (.7 + Math.random() * .9), 6);
     }
@@ -94,7 +111,14 @@
   hero.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') last = null; });
 
   // ---- render ----
-  function drawImg(ctx, img) { ctx.drawImage(img, cover.x * DPR, cover.y * DPR, cover.w * DPR, cover.h * DPR); }
+  function drawImg(ctx, img) {
+    ctx.drawImage(img, cover.x * DPR, cover.y * DPR, cover.w * DPR, cover.h * DPR);
+    if (cover.fade) { // image ends before the right edge (ultra-wide): fade the cut shoulder into the background
+      var x1 = (cover.x + cover.w) * DPR, x0 = x1 - cover.w * .09 * DPR, g = ctx.createLinearGradient(x0, 0, x1, 0);
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.save(); ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = g; ctx.fillRect(x0, 0, x1 - x0 + 1, ctx.canvas.height); ctx.restore();
+    }
+  }
   function compose(now) {
     // heal: drop dead points, paint mask
     var life = HOLD + FADE, i = 0;
@@ -124,7 +148,7 @@
   var ANCH = [[.53, .66, -2.2], [.78, .66, -.8], [.45, .80, -2.8], [.9, .80, -.35], [.56, .72, -2.0], [.75, .72, -1.1]];
   function fx() {
     sctx.setTransform(DPR, 0, 0, DPR, 0, 0); sctx.globalCompositeOperation = 'source-over'; sctx.clearRect(0, 0, W, H);
-    if (!reduce && Math.random() < .16) {
+    if (!reduce && Math.random() < .2) {
       var A = ANCH[(Math.random() * ANCH.length) | 0];
       bolt(cover.x + A[0] * cover.w, cover.y + A[1] * cover.h, A[2] + (Math.random() - .5) * .9, cover.w * (.02 + Math.random() * .035), 5);
     }
@@ -132,13 +156,16 @@
     for (var i = parts.length - 1; i >= 0; i--) {
       var p = parts[i]; p.vx *= .94; p.vy = p.vy * .94 + .05; p.x += p.vx; p.y += p.vy; p.life -= p.d;
       if (p.life <= 0) { parts.splice(i, 1); continue; }
-      sctx.strokeStyle = 'hsla(' + p.hue + ',100%,70%,' + p.life.toFixed(3) + ')'; sctx.lineWidth = 1.6;
-      sctx.beginPath(); sctx.moveTo(p.x, p.y); sctx.lineTo(p.x - p.vx * 2.2, p.y - p.vy * 2.2); sctx.stroke();
+      var tx = p.x - p.vx * 3, ty = p.y - p.vy * 3;
+      sctx.strokeStyle = 'hsla(' + p.hue + ',100%,62%,' + (p.life * .35).toFixed(3) + ')'; sctx.lineWidth = 5;   // soft glow
+      sctx.beginPath(); sctx.moveTo(p.x, p.y); sctx.lineTo(tx, ty); sctx.stroke();
+      sctx.strokeStyle = 'hsla(' + p.hue + ',100%,82%,' + p.life.toFixed(3) + ')'; sctx.lineWidth = 2;     // hot core
+      sctx.beginPath(); sctx.moveTo(p.x, p.y); sctx.lineTo(tx, ty); sctx.stroke();
     }
-    sctx.shadowColor = 'rgba(94,248,197,.9)'; sctx.shadowBlur = 12; sctx.lineWidth = 1.4;
+    sctx.shadowColor = 'rgba(94,248,197,1)'; sctx.shadowBlur = 16; sctx.lineWidth = 2;
     for (i = bolts.length - 1; i >= 0; i--) {
-      var b = bolts[i]; b.life -= .12; if (b.life <= 0) { bolts.splice(i, 1); continue; }
-      sctx.strokeStyle = 'rgba(160,255,222,' + b.life.toFixed(3) + ')';
+      var b = bolts[i]; b.life -= .09; if (b.life <= 0) { bolts.splice(i, 1); continue; }
+      sctx.strokeStyle = 'rgba(200,255,235,' + b.life.toFixed(3) + ')';
       sctx.beginPath(); sctx.moveTo(b.p[0][0], b.p[0][1]); for (var k = 1; k < b.p.length; k++) sctx.lineTo(b.p[k][0], b.p[k][1]); sctx.stroke();
     }
     sctx.shadowBlur = 0;

@@ -22,8 +22,8 @@
   linear-gradient(90deg,rgba(5,6,13,.55) 0%,rgba(5,6,13,0) 34%),
   linear-gradient(0deg,rgba(5,6,13,.55) 0%,rgba(5,6,13,0) 18%)}
 /* z3 graffiti tag behind the hero */
-.rv-tag{position:absolute;left:4.6%;top:63%;z-index:3;font-family:"Permanent Marker",cursive;font-size:calc(var(--s)*7.1);line-height:1;letter-spacing:-.045em;word-spacing:-.05em;white-space:nowrap;
-  color:rgba(128,150,150,.6);rotate:-10deg;scale:1 1.85;transform-origin:left center;filter:drop-shadow(0 0 1px rgba(0,0,0,.4));pointer-events:none}
+.rv-tag{position:absolute;left:4.6%;top:max(67%,calc(var(--s)*41.5));z-index:3;font-family:"Permanent Marker",cursive;font-size:calc(var(--s)*3.7);line-height:1;letter-spacing:-.045em;word-spacing:-.05em;white-space:nowrap;
+  color:rgba(128,150,150,.6);rotate:-8deg;scale:1 1.6;transform-origin:left center;filter:drop-shadow(0 0 1px rgba(0,0,0,.4));pointer-events:none}
 .rv-tag span{display:inline-block}
 .rv-tag .glow{color:#7dffd6;text-shadow:0 0 calc(var(--s)*.6) rgba(94,248,197,.9),0 0 calc(var(--s)*2.2) rgba(61,220,151,.65)}
 .rv-tag .w-on{transform:translateY(-8%)}
@@ -48,10 +48,10 @@
 .rv-cta:hover{transform:translateY(-2px);box-shadow:0 0 calc(var(--s)*2.6) rgba(61,220,151,.85),inset 0 1px 0 rgba(255,255,255,.35)}
 /* copy */
 .rv-copy{position:absolute;left:calc(var(--s)*3.3);top:calc(var(--s)*12.4);z-index:6;pointer-events:none}
-.rv-copy h1{font-family:var(--rv-display);font-weight:900;font-synthesis:none;font-size:calc(var(--s)*7.6);line-height:1.08;letter-spacing:-.01em;text-transform:uppercase;text-shadow:0 calc(var(--s)*.3) calc(var(--s)*2) rgba(0,0,0,.35);margin:0}
+.rv-copy h1{font-family:"Anton",var(--rv-display);font-weight:400;font-synthesis:none;font-size:calc(var(--s)*10);line-height:.96;letter-spacing:-.025em;text-transform:none;text-shadow:0 calc(var(--s)*.3) calc(var(--s)*2) rgba(0,0,0,.35);margin:0}
 .rv-copy h1 span{display:block}
 .rv-copy h1 .l2{color:#fff}
-.rv-copy h1 .l2 b{font-weight:400;font-family:"Anton",var(--rv-display);color:var(--rv-mint);text-shadow:0 0 calc(var(--s)*1.4) rgba(94,248,197,.45)}
+.rv-copy h1 .l2 b{font-weight:400;color:var(--rv-mint);text-shadow:0 0 calc(var(--s)*1.4) rgba(94,248,197,.45)}
 .rv-sub{margin-top:calc(var(--s)*1.05);font-family:var(--rv-body);font-weight:400;font-size:calc(var(--s)*1.5);color:#f2f3fa}
 .rv-sub em{font-style:normal;display:inline-block;margin:0 .2em;color:var(--rv-mint)}
 .rv-foot-l{position:absolute;bottom:calc(var(--s)*2.8);left:calc(var(--s)*2.7);z-index:6;font-size:calc(var(--s)*1.2);color:#e9ebf5;margin:0}
@@ -101,7 +101,7 @@ body.home-reveal.hdr-show .site-header{transform:none}
   .rv-menu-btn{width:44px;height:44px}.rv-menu-btn b{width:6px;height:6px}.rv-menu-btn i{gap:4px}
   .rv-cta{height:44px;padding:0 18px;font-size:13px}
   .rv-copy{left:16px;right:16px;top:clamp(92px,15vh,130px)}
-  .rv-copy h1{font-size:clamp(44px,13vw,100px)}
+  .rv-copy h1{font-size:clamp(64px,19.5vw,130px)}
   .rv-sub{font-size:clamp(14px,4vw,20px);margin-top:12px}
   .rv-tag{font-size:clamp(24px,7.6vw,60px);left:4%;top:47%}
   .rv-card{left:16px;right:16px;top:auto;bottom:58px;height:88px;width:auto;max-width:460px;margin-left:auto;aspect-ratio:auto;border-radius:16px;border-width:1.5px}
