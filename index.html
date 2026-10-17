@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JINYUAN｜AI 产品与智能体验</title>
 <meta name="description" content="李硕金沅（JINYUAN）｜AI 产品经理。专注于人工智能产品、用户体验与商业化创新，关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#05060d">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="JINYUAN｜AI 产品与智能体验">
@@ -16,12 +16,17 @@
 <meta property="og:image" content="assets/og.jpg?v=3">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23000'/%3E%3Crect x='3' y='3' width='10' height='10' fill='%23fff'/%3E%3Cpath d='M15 13V3a10 10 0 0 1 10 10z' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Crect x='3.8' y='15.8' width='8.4' height='8.4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M15 25V15h10z' fill='%237fa38f'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="preload" as="image" type="image/webp" href="assets/hero.webp?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,500..900&family=Outfit:wght@400;500;600;700&family=Permanent+Marker&family=Noto+Sans+SC:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="css/reveal.css?v=5">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/front.webp?v=5">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/back.webp?v=5">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "李硕金沅", "alternateName": "JINYUAN", "jobTitle": "AI 产品经理", "description": "李硕金沅（JINYUAN）｜AI 产品经理。专注于人工智能产品、用户体验与商业化创新，关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。", "inLanguage": "zh-Hans", "knowsAbout": ["AI 产品管理", "生成式 AI", "AI Agent", "用户体验"], "sameAs": ["https://github.com/Uashodauw"]}</script>
 </head>
-<body id="top">
+<body id="top" class="home-reveal">
 <a class="skip" href="#main">跳到主要内容</a>
 <div class="guides" aria-hidden="true"><div><span></span><span></span><span></span><span></span></div></div>
 <header class="site-header">
@@ -33,22 +38,33 @@
  
 </header>
 <main id="main">
-<!-- ===== HERO ===== -->
-<section class="hero" aria-labelledby="hero-title">
- <div class="hero-art feather" aria-hidden="false"><picture><source type="image/webp" srcset="assets/hero.webp?v=3"><img src="assets/hero.jpg?v=3" alt="黑白蚀刻版画风格的夜晚沙漠：层叠的沙丘与远处的高原岩柱，天空中有稀疏的星点" width="1280" height="720" loading="eager" fetchpriority="high" decoding="async"></picture></div>
- <div class="wrap">
-  <div class="hero-copy">
-   <p class="label"><b>00</b> / JINYUAN — AI PRODUCT</p>
-   <h1 id="hero-title">李硕金沅</h1>
-   <p class="role">AI 产品经理</p>
-   <p class="tag">专注于人工智能产品、用户体验与商业化创新</p>
-   <p class="sub">关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。</p>
-   <div class="hero-actions"><a class="btn btn-primary" href="articles.html">查看我的文章 <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="#contact">联系我</a></div>
+<!-- ===== HERO (draw to reveal) ===== -->
+<section class="rv-hero" id="hero" aria-label="李硕金沅 — 划动揭开">
+ <div class="rv-bg" aria-hidden="true"></div>
+ <div class="rv-shade" aria-hidden="true"></div>
+ <div class="rv-tag rise" aria-hidden="true"><span>HUMAN</span> <span class="glow">IN THE</span> <span class="w-on">LOOP</span></div>
+ <canvas id="rv-front" role="img" aria-label="戴着头盔的李硕金沅；划动即可揭开头盔下的真人照片"></canvas>
+ <canvas id="rv-sparks" aria-hidden="true"></canvas>
+ <div class="rv-header rise">
+  <a class="rv-logo" href="#top" aria-label="李硕金沅 首页"><svg viewBox="0 0 26 40" aria-hidden="true" focusable="false"><defs><linearGradient id="rv-bolt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6ffec"/><stop offset="1" stop-color="#3ddc97"/></linearGradient></defs><path d="M18.5 0 2 23.2h9.4L6.8 40 24 15.6h-9.6L18.5 0Z" fill="url(#rv-bolt)"/></svg><span>李硕金沅</span></a>
+  <nav class="rv-nav" aria-label="首屏导航"><a href="#top">首页</a><a href="#about">关于</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="articles.html">文章</a><a href="#contact">联系</a></nav>
+  <div class="rv-actions">
+   <button class="rv-menu-btn" type="button" aria-label="打开菜单" aria-controls="rv-menu" aria-expanded="false"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i></button>
+   <a class="rv-cta" href="#contact"><span>联系我</span><span class="lbl-long" aria-hidden="true">↗</span></a>
   </div>
-  <div class="hero-meta"><div class="grid4">
-   <div class="cell"><span class="k">方向</span>AI 产品设计</div><div class="cell"><span class="k">关注</span>智能体 · 生成式 AI</div>
-   <div class="cell"><span class="k">从业年限</span>1 年半</div><div class="cell"><span class="k">状态</span>欢迎交流与合作</div></div></div>
  </div>
+ <div class="rv-copy">
+  <h1 class="rv-h1 rise" id="hero-title"><span class="l1">李硕金沅</span><span class="l2"><b>AI</b> 产品经理</span></h1>
+  <p class="rv-sub rise">划动揭开 <em>→</em> 头盔下是一个懂业务的人</p>
+ </div>
+ <a class="rv-card rise" href="#projects">
+  <img src="assets/cover-mono-circuit.jpg" srcset="assets/cover-mono-circuit-sm.jpg 480w, assets/cover-mono-circuit.jpg 960w" sizes="(max-width:820px) 36vw, 18vw" alt="" width="960" height="540" decoding="async">
+  <span class="rv-badge">代表项目</span>
+  <div class="rv-card-body"><h3>代理业务台账 <br>异常预警助手</h3><p>转转集团 · 2025–2026</p></div>
+ </a>
+ <p class="rv-foot-l rise">shuojinyuan@gmail.com</p>
+ <p class="rv-foot-r rise">jinyuanpm</p>
+ <div class="rv-loader" aria-hidden="true"><i></i></div>
 </section>
 
 <!-- ===== 01 ABOUT ===== -->
@@ -186,6 +202,10 @@
  </div>
 </section>
 </main>
+<div class="rv-menu" id="rv-menu" aria-hidden="true" role="dialog" aria-label="菜单">
+ <button class="rv-menu-close" type="button" aria-label="关闭菜单">✕</button>
+ <a href="#top">首页</a><a href="#about">关于</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="articles.html">文章</a><a href="#contact">联系</a>
+</div>
 <footer class="site-footer">
  <div class="wrap">
   <div class="foot-cols">
@@ -212,6 +232,6 @@
  </div>
 </footer>
 <script src="js/main.js" defer></script>
-<script src="js/hero-anim.js?v=3" defer></script>
+<script src="js/reveal-hero.js?v=5" defer></script>
 </body>
 </html>
