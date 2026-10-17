@@ -6,14 +6,14 @@
   var fctx = front.getContext('2d'), sctx = sparks.getContext('2d');
   var scratch = document.createElement('canvas'), xctx = scratch.getContext('2d');
   var mask = document.createElement('canvas'), mctx = mask.getContext('2d');
-  var AR = 1672 / 941, HOLD = 650, FADE = 1100, MAXP = 900;
+  var AR = 1672 / 941, HOLD = 250, FADE = 600, MAXP = 900;
   var W = 0, H = 0, DPR = 1, cover = {x: 0, y: 0, w: 0, h: 0}, brushR = 40;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var pts = [], parts = [], bolts = [], last = null, dirty = true, running = false, visible = true, raf = 0;
 
   function load(src) { return new Promise(function (res) { var i = new Image(); i.decoding = 'async'; i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }); }
   var webp = document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  var ext = webp ? '.webp' : '.png', V = '?v=6';
+  var ext = webp ? '.webp' : '.png', V = '?v=7';
   var IMG = {};
 
   // ---- brush stamp (dry brush) ----
