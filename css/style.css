@@ -765,3 +765,6 @@ body::before{content:"HUMAN IN THE LOOP";position:fixed;left:50%;top:58%;transfo
 .dt-fig img{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
 .dt-fig figcaption{margin-top:10px;font-size:13px;line-height:1.55;color:var(--muted);text-align:center}
 @media (max-width:820px){.dt-ex{grid-template-columns:1fr}.dt-col{display:contents}.dt-fig{order:var(--o)}.dt-fig img{max-width:420px;margin:0 auto}}
+
+/* about: image removed, text spans full width */
+#about .about-text{grid-column:1/-1;max-width:820px}
