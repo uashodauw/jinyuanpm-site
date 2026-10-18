@@ -23,7 +23,7 @@ window.ARTICLES = [
  },
  {
   "slug": "personal-agent-from-tool-to-collaborator",
-  "title": "Personal Agent 个人智能体 从工具到协作者",
+  "title": "Personal Agent 个人智能体：从工具到协作者",
   "category": "AI Agent 产品化",
   "tags": [
    "Personal Agent",
@@ -35,7 +35,7 @@ window.ARTICLES = [
   "cover": "assets/articles/personal-agent-from-tool-to-collaborator/cv",
   "coverW": 1600,
   "coverH": 900,
-  "coverAlt": "Personal Agent 个人智能体 从工具到协作者 封面示意图",
+  "coverAlt": "Personal Agent 个人智能体：从工具到协作者 封面示意图",
   "excerpt": "Personal Agent 的价值在于把长期目标、个人上下文和日常行动连接起来；从任务执行、长期记忆、目标理解、跨应用协作、主动性与可追责六个维度给出阶段性判断与使用建议。",
   "readTime": 7,
   "source": null,
