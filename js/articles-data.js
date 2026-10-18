@@ -12,10 +12,10 @@ window.ARTICLES = [
    "模型评测"
   ],
   "date": "2026-10-13",
-  "cover": "assets/articles/gemini-4-argon-multimodal-review/cv",
-  "coverW": 1600,
-  "coverH": 900,
-  "coverAlt": "Gemini 4 Argon 多模态能力实测：从人像抠图、海报设计到产品场景合成 封面示意图",
+  "cover": "assets/articles/gemini-4-argon-multimodal-review/title",
+  "coverW": 1200,
+  "coverH": 675,
+  "coverAlt": "图 0 评测首图（非官方封面，图片由 AI 生成）",
   "excerpt": "现有结果显示，模型在主体保持、场景切换和商业化构图方面表现较好；复杂细节一致性与严格指令遵循仍需更多原始测试记录验证。",
   "readTime": 6,
   "source": null,
@@ -31,7 +31,7 @@ window.ARTICLES = [
    "RAG",
    "人机分工"
   ],
-  "date": "2026-10-12",
+  "date": "2026-08-19",
   "cover": "assets/articles/explain-agent-in-3-minutes/cv",
   "coverW": 1600,
   "coverH": 900,

@@ -84,7 +84,7 @@ def c_prd(s):
     s.add(f'<rect x="1195" y="{s.y(330)}" width="170" height="110" rx="8" fill="none" stroke="{NEU}" stroke-width="1.8" opacity=".6"/>')
     for k in range(3): s.line(1195,470+k*34,1365-(50 if k==1 else 0),470+k*34,c=NEU,sw=2.2,op=.5)
     s.arrow(755,450,800,450,op=.7); s.arrow(1115,450,1160,450,op=.7)
-COVERS={'explain-agent-in-3-minutes':c_agent,'gemini-4-argon-multimodal-review':c_gemini,'ai-customer-service-rollout':c_acs,
+COVERS={'explain-agent-in-3-minutes':c_agent,'ai-customer-service-rollout':c_acs,
  'used-car-ai-cs-mvp':c_usedcar,'pm-value-vibe-coding':c_vibe,'idea-to-demo-13-days':c_13d,'evaluating-agents':c_eval,
  'personal-site-launch-guide':c_site,'why-rag-matters':c_rag,'workflow-vs-agent':c_wf,'how-to-write-prd':c_prd}
 # ======================= BODY FIGURES =======================
