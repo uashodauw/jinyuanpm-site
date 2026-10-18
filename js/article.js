@@ -21,6 +21,7 @@
   meta('meta[name=description]', a.excerpt);
   meta('meta[property="og:title"]', a.title); meta('meta[property="og:description"]', a.excerpt);
   meta('meta[property="og:url"]', url);
+  meta('meta[property="og:image"]', a.cover + '.webp');
   var old = document.getElementById('art-ld'); if (old) old.remove();
   var ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'art-ld';
   ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: a.title, datePublished: a.date, description: a.excerpt, inLanguage: 'zh-Hans', author: { '@type': 'Person', name: '李硕金沅' }, keywords: a.tags.join(','), image: a.cover + '.webp' });
