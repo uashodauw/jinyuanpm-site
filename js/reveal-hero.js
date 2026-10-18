@@ -16,7 +16,7 @@
 
   function load(src) { return new Promise(function (res) { var i = new Image(); i.decoding = 'async'; i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }); }
   var webp = document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  var ext = webp ? '.webp' : '.png', V = '?v=7';
+  var ext = webp ? '.webp' : '.png', V = '?v=8';
   var IMG = {};
 
   // ---- brush stamp (dry brush) ----
