@@ -31,7 +31,7 @@ window.ARTICLES = [
    "RAG",
    "人机分工"
   ],
-  "date": "2026-08-19",
+  "date": "2026-07-22",
   "cover": "assets/articles/explain-agent-in-3-minutes/cv",
   "coverW": 1600,
   "coverH": 900,
