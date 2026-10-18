@@ -1,4 +1,4 @@
-/* Tiny Markdown renderer (headings ##/###, paragraphs, lists, check-lists, blockquote,
+/* Tiny Markdown renderer (headings ##/###, pipe tables, images with {WxH}, paragraphs, lists, check-lists, blockquote,
    fenced code, images with captions, hr, **bold**, *em*, `code`, [links](url)). */
 (function (root) {
   function esc(s) {
@@ -17,10 +17,12 @@
     });
     return s.replace(/\u0000(\d+)\u0000/g, function (_, i) { return stash[+i]; });
   }
-  function picture(src, alt) {
+  function picture(src, alt, w, h) {
+    var dim = ' width="' + (w || 960) + '" height="' + (h || 540) + '"';
+    if (/\.webp$/i.test(src)) return '<img src="' + esc(src) + '" alt="' + esc(alt) + '"' + dim + ' loading="lazy" decoding="async">';
     var webp = src.replace(/\.(jpe?g|png)$/i, '.webp');
     return '<picture><source type="image/webp" srcset="' + esc(webp) + '"><img src="' + esc(src) + '" alt="' + esc(alt) +
-      '" width="960" height="540" loading="lazy" decoding="async"></picture>';
+      '"' + dim + ' loading="lazy" decoding="async"></picture>';
   }
   function render(md) {
     var lines = md.replace(/\r\n?/g, '\n').split('\n'), out = [], heads = [], i = 0, para = [];
@@ -44,13 +46,22 @@
       if (/^>\s?/.test(l)) {
         flush(); var q = [];
         while (i < lines.length && /^>\s?/.test(lines[i])) q.push(lines[i++].replace(/^>\s?/, ''));
-        out.push('<blockquote><p>' + inline(q.join(' ')) + '</p></blockquote>');
+        out.push('<blockquote><p>' + q.map(inline).join('<br>') + '</p></blockquote>');
         continue;
       }
-      if ((m = l.match(/^!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?\)\s*$/))) {
+      if ((m = l.match(/^!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?\)(?:\{(\d+)x(\d+)\})?\s*$/))) {
         flush();
-        out.push('<figure>' + picture(m[2], m[1]) + (m[3] ? '<figcaption>' + inline(m[3]) + '</figcaption>' : '') + '</figure>');
+        out.push('<figure>' + picture(m[2], m[1], m[4], m[5]) + (m[3] ? '<figcaption>' + inline(m[3]) + '</figcaption>' : '') + '</figure>');
         i++; continue;
+      }
+      if (/^\|.*\|\s*$/.test(l)) {          /* pipe table: header | --- | rows */
+        flush(); var rows = [];
+        while (i < lines.length && /^\|.*\|\s*$/.test(lines[i])) rows.push(lines[i++]);
+        var cells = function (r) { return r.trim().replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }); };
+        var head = cells(rows[0]), body = rows.slice(/^\|[\s:|-]+\|$/.test(rows[1] || '') ? 2 : 1);
+        out.push('<div class="table-wrap"><table><thead><tr>' + head.map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          body.map(function (r) { return '<tr>' + cells(r).map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>');
+        continue;
       }
       if (/^\s*[-*]\s+/.test(l)) {
         flush(); var items = [], check = false;
