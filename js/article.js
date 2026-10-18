@@ -76,12 +76,17 @@
     if (bar) bar.style.width = (p * 100).toFixed(1) + '%';
   }
   window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll();
+  var so = null;
+  if (window.Site && Site.onLeave) Site.onLeave(function () {
+    window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll);
+    if (so) so.disconnect(); if (bar) bar.style.width = '0';
+  });
 
   /* toc scroll-spy */
   var tl = [].slice.call(document.querySelectorAll('.toc a'));
   if (tl.length && 'IntersectionObserver' in window) {
     var by = {}; tl.forEach(function (x) { by[x.getAttribute('href').slice(1)] = x; });
-    var so = new IntersectionObserver(function (es) {
+    so = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { tl.forEach(function (x) { x.classList.remove('active'); }); by[e.target.id].classList.add('active'); } });
     }, { rootMargin: '-80px 0px -70% 0px' });
     r.headings.forEach(function (h) { var el = document.getElementById(h.id); if (el) so.observe(el); });

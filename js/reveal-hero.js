@@ -1,7 +1,10 @@
 /* Draw-to-reveal hero: FRONT (helmet) over BACK (person), dry-brush mask with heal-over-time, sparks & bolts. */
 (function () {
   var hero = document.getElementById('hero');
-  if (!hero) return;
+  if (!hero || hero.__rv) return; hero.__rv = 1;
+  /* teardown bookkeeping so the client-side router can stop this cleanly (no leaked listeners / observers / RAF) */
+  var offs = [], dead = false;
+  function on(t, n, f, o) { t.addEventListener(n, f, o); offs.push(function () { t.removeEventListener(n, f, o); }); }
   var front = document.getElementById('rv-front'), sparks = document.getElementById('rv-sparks');
   var fctx = front.getContext('2d'), sctx = sparks.getContext('2d');
   var scratch = document.createElement('canvas'), xctx = scratch.getContext('2d');
@@ -171,12 +174,12 @@
     sctx.shadowBlur = 0;
   }
   function frame(now) {
-    raf = 0; if (!running) return;
+    raf = 0; if (!running || dead) return;
     if (pts.length || dirty) compose(now);
     fx();
     raf = requestAnimationFrame(frame);
   }
-  function kick() { if (running && !raf && visible) raf = requestAnimationFrame(frame); }
+  function kick() { if (running && !dead && !raf && visible) raf = requestAnimationFrame(frame); }
   function setRun(v) { running = v; if (v) kick(); else if (raf) { cancelAnimationFrame(raf); raf = 0; } }
 
   // ---- menu overlay ----
@@ -185,24 +188,34 @@
   mbtn.addEventListener('click', function () { openMenu(true); });
   menu.querySelector('.rv-menu-close').addEventListener('click', function () { openMenu(false); });
   menu.addEventListener('click', function (e) { var a = e.target.closest('a'); if (a) { if (a.getAttribute('href') === '#') e.preventDefault(); openMenu(false); } });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) openMenu(false); });
+  on(document, 'keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) openMenu(false); });
   hero.querySelectorAll('a[href="#"]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
 
   // ---- site header after the hero ----
   var body = document.body;
   function onScroll() { body.classList.toggle('hdr-show', window.scrollY > hero.offsetHeight - 70); }
-  window.addEventListener('scroll', onScroll, {passive: true}); onScroll();
+  on(window, 'scroll', onScroll, {passive: true}); onScroll();
 
   // ---- boot ----
   var fontsReady = document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(function (r) { setTimeout(r, 1500); })]) : Promise.resolve();
   Promise.all([load('assets/hero/front' + ext + V), load('assets/hero/back' + ext + V), fontsReady]).then(function (r) {
     IMG.front = r[0]; IMG.back = r[1];
+    if (dead) return;
     if (!IMG.front || !IMG.back) { hero.classList.add('ready'); return; }
     layout(); hero.classList.add('ready');
-    if ('ResizeObserver' in window) new ResizeObserver(function () { layout(); kick(); }).observe(hero);
-    else window.addEventListener('resize', function () { layout(); kick(); });
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; setRun(visible && !document.hidden); }).observe(hero);
-    document.addEventListener('visibilitychange', function () { setRun(visible && !document.hidden); });
+    if ('ResizeObserver' in window) { var ro = new ResizeObserver(function () { layout(); kick(); }); ro.observe(hero); offs.push(function () { ro.disconnect(); }); }
+    else on(window, 'resize', function () { layout(); kick(); });
+    if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { visible = es[0].isIntersecting; setRun(visible && !document.hidden); }); io.observe(hero); offs.push(function () { io.disconnect(); }); }
+    on(document, 'visibilitychange', function () { setRun(visible && !document.hidden); });
     setRun(true);
   });
+
+  function destroy() {
+    if (dead) return; dead = true; setRun(false);
+    offs.forEach(function (f) { f(); }); offs = [];
+    pts = []; parts = []; bolts = []; body.classList.remove('hdr-show'); hero.__rv = 0;
+    window.__rvActive = 0;
+  }
+  window.__rvActive = 1; /* debug/QA flag: 1 while a hero instance is alive */
+  if (window.Site && Site.onLeave) Site.onLeave(destroy);
 })();
