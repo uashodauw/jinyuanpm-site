@@ -750,3 +750,10 @@ body.rt-busy #rt-view{pointer-events:none}
 @media (max-width:1000px){.t-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){.t-grid{grid-template-columns:1fr;padding:8px 16px 16px;gap:12px}.t-note{margin:4px 16px 40px}}
 .pd-stats.pd-stats-2{grid-template-columns:repeat(2,1fr)}.pd-stats-2 b{white-space:normal}
+/* ===== "HUMAN IN THE LOOP" background wordmark (all pages) — same marker letterforms as the homepage tag, faint outline behind everything ===== */
+@font-face{font-family:"PM HITL";src:url(../assets/fonts/permanent-marker-hitl.woff2) format("woff2");font-display:swap}
+body::before{content:"HUMAN IN THE LOOP";position:fixed;left:50%;top:58%;transform:translate(-50%,-50%) rotate(-4deg);z-index:0;pointer-events:none;user-select:none;-webkit-user-select:none;
+  font-family:"PM HITL","Permanent Marker",cursive;font-size:min(9.2vw,17vh);line-height:1;letter-spacing:-.045em;word-spacing:-.05em;white-space:nowrap;
+  color:rgba(94,248,197,.018);-webkit-text-stroke:1px rgba(94,248,197,.075);text-shadow:0 0 40px rgba(61,220,151,.05)}
+@media (max-width:640px){body::before{content:"HUMAN\A IN THE\A LOOP";white-space:pre;text-align:center;font-size:24vw;line-height:.98;top:55%}}
+@media print{body::before{display:none}}
