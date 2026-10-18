@@ -116,7 +116,7 @@
       if (my !== seq) return;
       swap(parsed, u, opts);
       var scripts = [].slice.call(parsed.querySelectorAll('body script[src]')).map(function (s) { return s.getAttribute('src'); })
-        .filter(function (s) { return !/js\/(main|router)\.js/.test(s); });
+        .filter(function (s) { return !/js\/(main|router|cursor)\.js/.test(s); });
       Site.initPage();
       enter(reduce);
       return runScripts(scripts);

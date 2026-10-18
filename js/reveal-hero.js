@@ -68,6 +68,7 @@
     var y = h <= H ? H - h : 0;                              // bottom-anchored
     cover = {x: x, y: y, w: w, h: h, fade: x + w < W - .5};
     brushR = Math.max(38, Math.min(W, H) * (W < 820 ? .11 : .075));
+    hero.setAttribute('data-brush', Math.round(brushR));       // read by js/cursor.js for the brush-size ring
     dirty = true;
   }
 

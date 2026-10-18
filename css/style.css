@@ -622,3 +622,28 @@ body.rt-busy #rt-view{pointer-events:none}
 .has-ind .nav-links a[aria-current]{border-color:transparent}
 @media (max-width:900px){.nav-ind{display:none}.has-ind .nav-links a[aria-current]{border-color:var(--line)}}
 @media (prefers-reduced-motion:reduce){.nav-ind{transition:opacity .15s}}
+/* ===== custom HUD cursor (js/cursor.js) — fine pointers only ===== */
+@media (hover:hover) and (pointer:fine){
+ html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%235ef8c5' stroke-width='1.6'%3E%3Cpath d='M2 7V2h5M17 2h5v5M22 17v5h-5M7 22H2v-5' opacity='.85'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%235ef8c5'/%3E%3C/svg%3E") 12 12,auto}
+ a,button,summary,label[for],select,[role="button"]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%235ef8c5' stroke-width='1.6'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%235ef8c5'/%3E%3C/svg%3E") 12 12,pointer}
+ html.cc-on,html.cc-on *{cursor:none!important}
+ html.cc-on input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),html.cc-on textarea,html.cc-on [contenteditable=true]{cursor:text!important}
+}
+#rt-cursor{position:fixed;left:0;top:0;width:0;height:0;z-index:10000;pointer-events:none;opacity:0;transition:opacity .25s;color:#5ef8c5;contain:layout style}
+#rt-cursor.is-on{opacity:1}
+#rt-cursor>*{position:absolute;left:0;top:0;will-change:transform}
+.cc-dot{width:0;height:0}
+.cc-dot::before{content:"";position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#5ef8c5;box-shadow:0 0 0 1px rgba(5,6,13,.7),0 0 10px 2px rgba(94,248,197,.8)}
+.cc-dot::after{content:"";position:absolute;left:-8px;top:-8px;width:16px;height:16px;background:linear-gradient(#5ef8c5,#5ef8c5) center/1px 100% no-repeat,linear-gradient(#5ef8c5,#5ef8c5) center/100% 1px no-repeat;opacity:.55;-webkit-mask:radial-gradient(circle,transparent 4.5px,#000 5px);mask:radial-gradient(circle,transparent 4.5px,#000 5px)}
+.cc-ring{width:0;height:0;filter:drop-shadow(0 0 1px rgba(5,6,13,.95)) drop-shadow(0 0 5px rgba(94,248,197,.7))}
+.cc-ring b{position:absolute;left:0;top:0;width:9px;height:9px;border-left:1.6px solid currentColor;border-top:1.6px solid currentColor;transform-origin:0 0}
+.cc-circ{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(94,248,197,.6)}
+.cc-brush{position:absolute;left:-100px;top:-100px;width:200px;height:200px;border-radius:50%;border:2px solid rgba(94,248,197,.95);box-shadow:0 0 0 1px rgba(5,6,13,.55),inset 0 0 0 1px rgba(5,6,13,.45),inset 0 0 24px rgba(94,248,197,.18);background:radial-gradient(circle,rgba(94,248,197,.1),rgba(94,248,197,0) 72%);opacity:0;transition:opacity .2s}
+#rt-cursor.is-brush .cc-brush{opacity:1}
+#rt-cursor.is-brush .cc-ring b{opacity:.9}
+#rt-cursor.is-hover .cc-ring b{border-width:2px}
+#rt-cursor.is-hover .cc-dot::after{opacity:0}
+#rt-cursor.is-text .cc-ring,#rt-cursor.is-text .cc-dot{opacity:0}
+.cc-ring b,.cc-dot,.cc-ring{transition:opacity .2s}
+.cc-pulse{position:absolute;left:-16px!important;top:-16px!important;width:32px;height:32px;border-radius:50%;border:2.5px solid #5ef8c5;box-shadow:0 0 0 1px rgba(5,6,13,.5),0 0 18px 2px rgba(94,248,197,.75),inset 0 0 10px rgba(94,248,197,.5);opacity:0}
+@media (hover:none),(pointer:coarse){#rt-cursor{display:none}}
