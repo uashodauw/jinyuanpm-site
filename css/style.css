@@ -647,3 +647,14 @@ body.rt-busy #rt-view{pointer-events:none}
 .cc-ring b,.cc-dot,.cc-ring{transition:opacity .2s}
 .cc-pulse{position:absolute;left:-16px!important;top:-16px!important;width:32px;height:32px;border-radius:50%;border:2.5px solid #5ef8c5;box-shadow:0 0 0 1px rgba(5,6,13,.5),0 0 18px 2px rgba(94,248,197,.75),inset 0 0 10px rgba(94,248,197,.5);opacity:0}
 @media (hover:none),(pointer:coarse){#rt-cursor{display:none}}
+/* project detail: pipeline flow + result stats */
+.pd-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0 0;font-size:13px}
+.pd-flow span{border:1px solid rgba(94,248,197,.45);color:var(--fg);padding:3px 10px;border-radius:999px;background:rgba(94,248,197,.06)}
+.pd-flow i{font-style:normal;color:var(--accent)}
+.pd-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}
+.pd-stats div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:rgba(94,248,197,.04)}
+.pd-stats b{display:block;font-family:var(--sans);font-size:clamp(18px,1.6vw,22px);color:var(--accent);white-space:nowrap}
+.pd-stats span{font-size:12px;color:var(--muted)}
+.pd-list li b{color:var(--fg);font-weight:600}
+@media (max-width:420px){.pd-stats{grid-template-columns:repeat(2,1fr)}}
+.tl-item dd a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(94,248,197,.4)}

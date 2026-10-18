@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>产品与项目经验｜JINYUAN｜AI 产品与智能体验</title>
-<meta name="description" content="李硕金沅的产品与项目经验：二手回收台账与账目异常预警助手（转转集团）。">
+<meta name="description" content="李硕金沅的产品与项目经验：二手手机外观成色 AI 定级系统、二手回收台账与账目异常预警助手（转转集团）。">
 <meta name="theme-color" content="#05060d">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="JINYUAN｜AI 产品与智能体验">
 <meta property="og:title" content="产品与项目经验｜JINYUAN｜AI 产品与智能体验">
-<meta property="og:description" content="李硕金沅的产品与项目经验：二手回收台账与账目异常预警助手（转转集团）。">
+<meta property="og:description" content="李硕金沅的产品与项目经验：二手手机外观成色 AI 定级系统、二手回收台账与账目异常预警助手（转转集团）。">
 <meta property="og:locale" content="zh_CN">
 <!-- For a real deployment make og:image / og:url absolute, e.g. https://your-domain.com/assets/og.jpg -->
 <meta property="og:image" content="assets/og.jpg">
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&family=Noto+Sans+SC:wght@500;700;900&display=swap">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=10">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "李硕金沅", "alternateName": "JINYUAN", "jobTitle": "AI 产品经理", "description": "李硕金沅（JINYUAN）｜AI 产品经理。专注于人工智能产品、用户体验与商业化创新，关注 AI 产品设计、智能体、生成式 AI、用户需求与技术落地。", "inLanguage": "zh-Hans", "knowsAbout": ["AI 产品管理", "生成式 AI", "AI Agent", "用户体验"], "sameAs": ["https://github.com/Uashodauw"]}</script>
 </head>
@@ -40,7 +40,10 @@
 <section class="sec" style="border-top:0" id="projects" aria-labelledby="projects-t">
  <div class="wrap">
   <div class="projects"><article class="project project-featured reveal">
-   <div class="project-body"><p class="label"><b>P01</b> / PROJECT · 转转集团 · 2025.03 — 2026.09</p>
+   <div class="project-body"><p class="label"><b>P01</b> / PROJECT · 转转集团 · 拍照 3.0 + AI 定级</p>
+    <h3><a class="card-link" href="project-ai-grading.html">二手手机外观成色 AI 定级系统</a> <small>产品定义 · 评测体系 · 人机协同设计</small></h3>
+    <dl><dt>项目背景</dt><dd>成色定级依赖质检师人眼目检，主观、标准不一、易误判，质检产能成为回收规模化瓶颈。</dd><dt>项目内容</dt><dd>标准化采集 + AI 缺陷识别 + 规则定级 + 人工复验；影子运行 → 辅助预填 → 分流直通 → 扩机型放量四阶段推进。</dd><dt>我的职责</dt><dd>定边界 · 定标准 · 建评测 · 设分流 · 促闭环。</dd><dt>项目成果</dt><dd>定级一致率 ≥ 85%，高估率 ≤ 2%，直通率 ≥ 70%；单台定级约 90 秒 → 约 35 秒，错误率约 8% → 4%。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">目标检测 + 实例分割</span><span class="pill">规则引擎定级</span><span class="pill">置信度分流</span><span class="pill">数据飞轮</span></div></dd></dl><p class="more"><a class="link-arrow" href="project-ai-grading.html">查看项目详情 <span aria-hidden="true">→</span></a></p></div></article><article class="project project-featured reveal">
+   <div class="project-body"><p class="label"><b>P02</b> / PROJECT · 转转集团 · 2025.03 — 2026.09</p>
     <h3><a class="card-link" href="project-agent-ledger.html">二手回收台账与账目异常预警助手</a> <small>AI 应用运营 / 业务流程优化</small></h3>
     <dl><dt>项目背景</dt><dd>代理业务中台账依赖人工、异常订单发现滞后、关键金额复核不足，需要设计 AI 台账与异常预警方案。</dd><dt>定标准</dt><dd>调研二手数码回收单据，提炼机型、内存版本、成色定级、IMEI 串号、验机扣款项、实付金额等 12 个核心解析字段；建立行业行话映射字典，把“15pm”“大花”“靓机”等非标表达映射到标准机型与质检定级。</dd><dt>调效果</dt><dd>针对手写单、转账截图等非标场景编写结构化抽取 Prompt 并补充 Few-shot 样例；优化金额字段的上下文判断，解决“多笔验机扣款”与“最终实付打款金额”易被混淆的问题。</dd><dt>做评测</dt><dd>用 200+ 笔真实历史脱敏台账建立基准测试集，主导多轮质检验收；对提取失败与幻觉等 Bad Case 归因分类、反哺提示词；推动研发落地兜底规则（如算力不足或差额异常时自动标记“待人工复核”），完成人机协同闭环。</dd><dt>项目成果</dt><dd>方案落地：完成 AI 台账与异常预警方案开发，并在 B 端客户及内部团队中投入试用。流程应用：实现台账汇总、异常提示、人工确认和金额复核流程的实际应用。</dd><dt>技术 / AI 能力</dt><dd><div class="chips-inline"><span class="pill">结构化抽取</span><span class="pill">提示词工程 · Few-shot</span><span class="pill">评测与 Bad Case 归因</span><span class="pill">人机协同</span></div></dd></dl><p class="more"><a class="link-arrow" href="project-agent-ledger.html">查看项目详情 <span aria-hidden="true">→</span></a></p></div></article></div>
  </div>
