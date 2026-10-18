@@ -59,3 +59,15 @@ tools/articles/*.md    示例文章源文件
 
 ## 无障碍 / 性能
 跳转链接、语义化标签、键盘可用的菜单与筛选、可见焦点、`aria-live` 结果提示、`prefers-reduced-motion` 支持；仅系统字体、无第三方请求。
+
+## AI 分身（站内聊天）
+
+- 前端：`js/chat.js`（所有页面加载；入口是页眉 / 首页左上角的「问问 JinYuan 的 AI 分身」按钮），样式在 `css/style.css` 末尾。
+- 后端：`api/chat.js`（Vercel Serverless Function），调用 DeepSeek `deepseek-chat`，流式返回。密钥只从 Vercel 项目环境变量 `DEEPSEEK_API_KEY` 读取，不要写进仓库。
+- 知识库：`api/knowledge.json` 由脚本从站内页面和 `js/articles-data.js` 生成。**改了网站内容（关于 / 经历 / 项目 / 工具 / 联系 / 文章）之后要重新生成并提交：**
+
+  ```
+  python3 tools/build-knowledge.py   # 需要 beautifulsoup4
+  git add api/knowledge.json && git commit -m "Update chat knowledge"
+  ```
+- 限制：仅 POST、同源（jinyuanpm.com / www / *.vercel.app）、单条 ≤ 2000 字、只发最近 8 条、每 IP 10 分钟 20 次（内存计数，Serverless 多实例下为尽力而为）。
