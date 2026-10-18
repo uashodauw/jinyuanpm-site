@@ -659,3 +659,21 @@ body.rt-busy #rt-view{pointer-events:none}
 @media (max-width:420px){.pd-stats{grid-template-columns:repeat(2,1fr)}}
 .tl-item dd a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(94,248,197,.4)}
 .h-zz .nb{display:inline-block}
+/* about: 8-field facts strip, strengths grid, career direction */
+.facts-8 dd{font-size:16px;overflow-wrap:anywhere}
+.facts-8 dd a{color:inherit;text-decoration:underline;text-decoration-color:rgba(94,248,197,.45);text-underline-offset:3px}
+.facts-8>div:nth-child(n+5){border-top:1px solid var(--line)}
+.facts-8>div{padding:16px clamp(18px,2vw,30px)}
+.strengths-wrap,.direction{grid-column:1/5}
+.strengths{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.strengths li{display:flex;gap:12px;border:1px solid var(--card-line,rgba(255,255,255,.14));border-radius:var(--r,14px);padding:14px 16px;background:rgba(10,11,23,.55)}
+.strengths .n{font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:3px}
+.strengths b{display:block;font-size:15px;color:var(--fg);margin-bottom:4px}
+.strengths p{margin:0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.direction p:not(.label){margin:8px 0 0;font-size:15px;line-height:1.7;color:var(--muted);max-width:62em}
+@media (max-width:900px){.strengths{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.strengths{grid-template-columns:1fr}.facts-8>div:nth-child(n+3){border-top:1px solid var(--line)}}
+.pd-flow em{font-style:normal;font-size:11px;letter-spacing:.12em;color:var(--dim,#8a93a6);width:100%;margin-bottom:2px}
+.pd-card h2+.pd-flow{margin:0 0 12px}
+@media (max-width:900px){.strengths-wrap,.direction{padding:0 clamp(20px,2.4vw,36px);margin-top:22px}.philosophy{margin-top:22px}}
+@media (max-width:600px){.facts-8>div:nth-child(6){grid-column:1/-1;order:7}.facts-8>div:nth-child(7){order:6}.facts-8>div:nth-child(8){grid-column:1/-1;order:8}}
