@@ -84,6 +84,16 @@ class S:
             s.add(f'<path d="M{cx} {y-r} L{cx+r*.87} {y-r*.5} V{y+r*.5} L{cx} {y+r} L{cx-r*.87} {y+r*.5} V{y-r*.5}Z M{cx-r*.87} {y-r*.5} L{cx} {y} L{cx+r*.87} {y-r*.5} M{cx} {y} V{y+r}" fill="none" stroke="{A}" stroke-width="2.2" stroke-linejoin="round"/>')
         elif k=='car':
             s.add(f'<path d="M{cx-r} {y+r*.25} V{y-r*.05} L{cx-r*.6} {y-r*.15} L{cx-r*.3} {y-r*.5} H{cx+r*.35} L{cx+r*.65} {y-r*.15} L{cx+r} {y-r*.05} V{y+r*.25}Z" fill="none" stroke="{A}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="{cx-r*.55}" cy="{y+r*.3}" r="{r*.2}" fill="{CARD}" stroke="{A}" stroke-width="2.2"/><circle cx="{cx+r*.55}" cy="{y+r*.3}" r="{r*.2}" fill="{CARD}" stroke="{A}" stroke-width="2.2"/>')
+        elif k=='calendar':
+            s.add(f'<rect x="{cx-r*.8}" y="{y-r*.65}" width="{r*1.6}" height="{r*1.5}" rx="6" fill="none" stroke="{A}" stroke-width="2.2"/><line x1="{cx-r*.8}" y1="{y-r*.2}" x2="{cx+r*.8}" y2="{y-r*.2}" stroke="{A}" stroke-width="2"/><line x1="{cx-r*.4}" y1="{y-r*.9}" x2="{cx-r*.4}" y2="{y-r*.45}" stroke="{A}" stroke-width="2.4" stroke-linecap="round"/><line x1="{cx+r*.4}" y1="{y-r*.9}" x2="{cx+r*.4}" y2="{y-r*.45}" stroke="{A}" stroke-width="2.4" stroke-linecap="round"/>'+''.join(f'<rect x="{cx-r*.5+i*r*.38}" y="{y+r*.05+j*r*.32}" width="{r*.18}" height="{r*.16}" rx="2" fill="{A}" opacity="{.9 if (i,j)==(1,0) else .4}"/>' for i in range(3) for j in range(2)))
+        elif k=='mail':
+            s.add(f'<rect x="{cx-r*.85}" y="{y-r*.55}" width="{r*1.7}" height="{r*1.1}" rx="5" fill="none" stroke="{A}" stroke-width="2.2"/><path d="M{cx-r*.8} {y-r*.45} L{cx} {y+r*.12} L{cx+r*.8} {y-r*.45}" fill="none" stroke="{A}" stroke-width="2.2" stroke-linejoin="round"/>')
+        elif k=='card':
+            s.add(f'<rect x="{cx-r*.9}" y="{y-r*.6}" width="{r*1.8}" height="{r*1.2}" rx="7" fill="none" stroke="{A}" stroke-width="2.2"/><line x1="{cx-r*.9}" y1="{y-r*.25}" x2="{cx+r*.9}" y2="{y-r*.25}" stroke="{A}" stroke-width="3"/><line x1="{cx-r*.6}" y1="{y+r*.25}" x2="{cx-r*.1}" y2="{y+r*.25}" stroke="{A}" stroke-width="2.2" stroke-linecap="round"/>')
+        elif k=='home':
+            s.add(f'<path d="M{cx-r*.9} {y-r*.05} L{cx} {y-r*.85} L{cx+r*.9} {y-r*.05} M{cx-r*.65} {y-r*.25} V{y+r*.8} H{cx+r*.65} V{y-r*.25}" fill="none" stroke="{A}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="{cx-r*.2}" y="{y+r*.25}" width="{r*.4}" height="{r*.55}" rx="2" fill="none" stroke="{A}" stroke-width="2"/>')
+        elif k=='user':
+            s.add(f'<circle cx="{cx-r*.15}" cy="{y-r*.38}" r="{r*.32}" fill="none" stroke="{A}" stroke-width="2.2"/><path d="M{cx-r*.8} {y+r*.75} Q{cx-r*.75} {y+r*.05} {cx-r*.15} {y+r*.05} Q{cx+r*.3} {y+r*.05} {cx+r*.42} {y+r*.35}" fill="none" stroke="{A}" stroke-width="2.2" stroke-linecap="round"/><path d="M{cx+r*.2} {y+r*.62} l{r*.22} {r*.24} l{r*.45} {-r*.5}" fill="none" stroke="{A}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>')
     def chat(s,x,y,w,h,side='l',lines=2,accent=False):
         t=f'L{x+30} {y+h+22} L{x+50} {y+h}' if side=='l' else f'L{x+w-30} {y+h+22} L{x+w-50} {y+h}'
         d=(f'M{x+14} {y} H{x+w-14} Q{x+w} {y} {x+w} {y+14} V{y+h-14} Q{x+w} {y+h} {x+w-14} {y+h} '

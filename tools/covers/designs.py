@@ -1,5 +1,18 @@
 from lib import *
 # ======================= COVERS (1600x900) =======================
+def c_personal(s):        # personal agent hub -> calendar / mail / payment / home; payment & home actions pass a human-confirmation node
+    s.label='12 / PERSONAL AGENT'; ax,ay=560,450
+    sv=[(330,255,'calendar'),(330,645,'mail'),(820,255,'card'),(820,645,'home')]
+    for x,y,ic in sv: s.line(ax,ay,x,y,c=LINE,sw=1.6)
+    s.circle(ax,ay,118,c=LINE,sw=1.5,glow=False,dash='4 10')
+    s.node(ax,ay,70,solid=True)
+    for x,y,ic in sv: s.node(x,y,50,icon=ic)
+    hx,hy=1250,450
+    s.circle(hx,hy,96,c=A,sw=1.6,glow=False,dash='5 9',op=.6)
+    s.curve(880,255,hx-80,hy-40,bend=.18,sw=2.2,op=.8)
+    s.curve(880,645,hx-80,hy+40,bend=-.18,sw=2.2,op=.8)
+    s.node(hx,hy,62,icon='user')
+    for i in range(3): s.line(1360,560+i*26,1440-(30 if i%2 else 0),560+i*26,c=NEU,sw=2.2,op=.45)
 def c_agent(s):           # goal / perception / action / memory around an agent core
     s.label='01 / AGENT'; cx,cy=800,440
     s.circle(cx,cy,230,c=LINE,sw=1.5,glow=False,dash='4 10')
@@ -84,7 +97,7 @@ def c_prd(s):
     s.add(f'<rect x="1195" y="{s.y(330)}" width="170" height="110" rx="8" fill="none" stroke="{NEU}" stroke-width="1.8" opacity=".6"/>')
     for k in range(3): s.line(1195,470+k*34,1365-(50 if k==1 else 0),470+k*34,c=NEU,sw=2.2,op=.5)
     s.arrow(755,450,800,450,op=.7); s.arrow(1115,450,1160,450,op=.7)
-COVERS={'explain-agent-in-3-minutes':c_agent,'ai-customer-service-rollout':c_acs,
+COVERS={'personal-agent-from-tool-to-collaborator':c_personal,'explain-agent-in-3-minutes':c_agent,'ai-customer-service-rollout':c_acs,
  'used-car-ai-cs-mvp':c_usedcar,'pm-value-vibe-coding':c_vibe,'idea-to-demo-13-days':c_13d,'evaluating-agents':c_eval,
  'personal-site-launch-guide':c_site,'why-rag-matters':c_rag,'workflow-vs-agent':c_wf,'how-to-write-prd':c_prd}
 # ======================= BODY FIGURES =======================
