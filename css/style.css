@@ -749,3 +749,4 @@ body.rt-busy #rt-view{pointer-events:none}
 .t-note{margin:4px clamp(20px,2.4vw,36px) 48px;font-size:12px;color:var(--dim)}
 @media (max-width:1000px){.t-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){.t-grid{grid-template-columns:1fr;padding:8px 16px 16px;gap:12px}.t-note{margin:4px 16px 40px}}
+.pd-stats.pd-stats-2{grid-template-columns:repeat(2,1fr)}.pd-stats-2 b{white-space:normal}
