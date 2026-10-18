@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/project-agent-ledger.html",
+      "destination": "/project-ai-grading.html",
+      "permanent": true
+    },
+    {
+      "source": "/project-agent-ledger",
+      "destination": "/project-ai-grading.html",
+      "permanent": true
+    }
+  ]
+}

@@ -658,3 +658,4 @@ body.rt-busy #rt-view{pointer-events:none}
 .pd-list li b{color:var(--fg);font-weight:600}
 @media (max-width:420px){.pd-stats{grid-template-columns:repeat(2,1fr)}}
 .tl-item dd a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(94,248,197,.4)}
+.h-zz .nb{display:inline-block}
