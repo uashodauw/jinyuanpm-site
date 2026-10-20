@@ -3,8 +3,8 @@ Re-run after changing page content or articles:  python3 tools/build-knowledge.p
 import json, re, os
 from bs4 import BeautifulSoup
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES=[('about.html','关于'),('experience.html','经历'),('projects.html','项目列表'),('project-ai-grading.html','项目详情：转转 AI 定级'),
-       ('project-tencent-membership.html','项目详情：腾讯会员权益'),('project-desktidy.html','项目详情：DeskTidy'),('tools.html','常用工具'),('contact.html','联系方式')]
+PAGES=[('about.html','关于'),('experience.html','经历'),('projects.html','项目列表'),('project-agents-pro.html','项目详情：Agents Pro'),('project-pixeling.html','项目详情：Pixeling 千象'),
+('project-desktidy.html','项目详情：DeskTidy'),('tools.html','常用工具'),('contact.html','联系方式')]
 def clean(t): return re.sub(r'[ \t\u00a0]+',' ',re.sub(r'\n\s*\n+','\n',t)).strip()
 def page_text(fn):
     s=BeautifulSoup(open(os.path.join(ROOT,fn),encoding='utf-8').read(),'html.parser')

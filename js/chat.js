@@ -5,7 +5,7 @@
 (function () {
   if (window.__chat) return; window.__chat = 1;
   var doc = document, panel, log, form, input, sendBtn, sugg, opener = null, busy = false, msgs = [], ctrl = null;
-  var SUG = ['他做过哪些 AI 项目？', '在转转负责什么？', '他怎么看 Agent？'];
+  var SUG = ['他做过哪些 AI 项目？', '在 AutoAgents 负责什么？', '他怎么看 Agent？'];
   var WELCOME = '你好，我是金沅的 AI 分身，可以介绍他的经历、项目、文章观点和联系方式。想了解什么？';
 
   function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }

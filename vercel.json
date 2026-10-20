@@ -2,12 +2,32 @@
   "redirects": [
     {
       "source": "/project-agent-ledger.html",
-      "destination": "/project-ai-grading.html",
+      "destination": "/projects.html",
       "permanent": true
     },
     {
       "source": "/project-agent-ledger",
-      "destination": "/project-ai-grading.html",
+      "destination": "/projects.html",
+      "permanent": true
+    },
+    {
+      "source": "/project-ai-grading.html",
+      "destination": "/projects.html",
+      "permanent": true
+    },
+    {
+      "source": "/project-ai-grading",
+      "destination": "/projects.html",
+      "permanent": true
+    },
+    {
+      "source": "/project-tencent-membership.html",
+      "destination": "/projects.html",
+      "permanent": true
+    },
+    {
+      "source": "/project-tencent-membership",
+      "destination": "/projects.html",
       "permanent": true
     }
   ]
